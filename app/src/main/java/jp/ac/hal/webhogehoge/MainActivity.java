@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         // WebView呼び出し
         myWebView = (WebView) findViewById(R.id.webView);
         myWebView.setWebViewClient(new WebViewClient());
-//        webview内でのjsを許
+//        webview内でのjsを許可
         myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
         myWebView.addJavascriptInterface(new WebAppInterface(this), "Android");

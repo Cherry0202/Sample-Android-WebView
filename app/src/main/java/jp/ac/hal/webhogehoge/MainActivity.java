@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
         myWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
-        myWebView.loadUrl("file:///android_asset/index.html"); // ローカルのhtmlファイルを指定
+//        myWebView.loadUrl("file:///android_asset/dist/index.html"); // ローカルのhtmlファイルを指定
+//        myWebView.loadUrl("https://kurosawatomonori.com/"); // ローカルのhtmlファイルを指定
+        myWebView.loadUrl("file:///android_asset/index2.html");
     }
 }

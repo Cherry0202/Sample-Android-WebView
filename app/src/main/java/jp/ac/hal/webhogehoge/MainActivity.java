@@ -3,15 +3,19 @@ package jp.ac.hal.webhogehoge;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 	// メンバー変数
 	//BTの設定
 	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
-//	private BluetoothDevice mBtDevice; //BTデバイス
+	private BluetoothDevice mBtDevice; //BTデバイス
 //	private BluetoothSocket mBtSocket; //BTソケット
 //	private OutputStream mOutput; //出力ストリーム
 
@@ -41,16 +45,15 @@ public class MainActivity extends AppCompatActivity {
 		mBluetoothAdapter = bluetoothManager.getAdapter();
 
 
-//		//端末がBluetoothに対応しているか
-//		if (BluetoothAdapter.getDefaultAdapter() == null) {
-//			Toast.makeText(this, "Bluetoothに対応していない端末です", Toast.LENGTH_SHORT).show();
-//			finish();
-//		}
-//		//Bluetoothが有効であるか
-//		if (!mBluetoothAdapter.isEnabled()) {
-//			Toast.makeText(this, "BluetoothをONにします", Toast.LENGTH_SHORT).show();
-//			mBluetoothAdapter.enable();
-//		}
+		//端末がBluetoothに対応しているか
+		if (BluetoothAdapter.getDefaultAdapter() == null) {
+			Toast.makeText(this, "Bluetoothに対応していない端末です", Toast.LENGTH_SHORT).show();
+			finish();
+		}
+
+
+//		ペアリングしているデバイスがあるか
+		findDevice();
 
 //		以下 WebView関連
 
@@ -82,6 +85,21 @@ public class MainActivity extends AppCompatActivity {
 		startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
 	}
 
+	//	ペアリングしているデバイスがあるか
+	private void findDevice() {
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+		if (pairedDevices.size() > 0) {
+			// There are paired devices. Get the name and address of each paired device.
+			for (BluetoothDevice device : pairedDevices) {
+				String deviceName = device.getName();
+				String deviceHardwareAddress = device.getAddress(); // MAC address
+				Log.d("ペアリング", deviceName + deviceHardwareAddress);
+			}
+		} else {
+			Log.d("ペアリング", "ペアリングないよ！！");
+		}
+	}
 
 	// 機能の有効化ダイアログの操作結果
 	@Override
@@ -94,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	void sampleText() {
+		System.out.println("hogehoge");
+		Log.d("debug", "呼び出されたよ！！");
 	}
 
 }

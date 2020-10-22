@@ -94,10 +94,10 @@ public class MainActivity extends AppCompatActivity {
 			for (BluetoothDevice device : pairedDevices) {
 				String deviceName = device.getName();
 				String deviceHardwareAddress = device.getAddress(); // MAC address
-				Log.d("ペアリング", deviceName + deviceHardwareAddress);
+				Log.d("search-device", deviceName + deviceHardwareAddress);
 			}
 		} else {
-			Log.d("ペアリング", "ペアリングないよ！！");
+			Log.d("search-device", "ペアリングないよ！！");
 		}
 	}
 

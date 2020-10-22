@@ -41,16 +41,16 @@ public class MainActivity extends AppCompatActivity {
 		mBluetoothAdapter = bluetoothManager.getAdapter();
 
 
-		//端末がBluetoothに対応しているか
-		if (BluetoothAdapter.getDefaultAdapter() == null) {
-			Toast.makeText(this, "Bluetoothに対応していない端末です", Toast.LENGTH_SHORT).show();
-			finish();
-		}
-		//Bluetoothが有効であるか
-		if (!mBluetoothAdapter.isEnabled()) {
-			Toast.makeText(this, "BluetoothをONにします", Toast.LENGTH_SHORT).show();
-			mBluetoothAdapter.enable();
-		}
+//		//端末がBluetoothに対応しているか
+//		if (BluetoothAdapter.getDefaultAdapter() == null) {
+//			Toast.makeText(this, "Bluetoothに対応していない端末です", Toast.LENGTH_SHORT).show();
+//			finish();
+//		}
+//		//Bluetoothが有効であるか
+//		if (!mBluetoothAdapter.isEnabled()) {
+//			Toast.makeText(this, "BluetoothをONにします", Toast.LENGTH_SHORT).show();
+//			mBluetoothAdapter.enable();
+//		}
 
 //		以下 WebView関連
 

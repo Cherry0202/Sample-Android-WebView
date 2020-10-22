@@ -6,10 +6,16 @@
 <body>
 <input type="button" value="Say hello" onClick="showAndroidToast('Hello Android!')"/>
 <!--<input type="button" value="Say hello2" onClick="showAndroidToast2('sample')"/>-->
+<div id="sample">
+    hogehoge
+</div>
 
 <script type="text/javascript">
         function showAndroidToast(toast) {
-            Android.showToast(toast);
+           hoge = Android.showToast(toast);
+           const element = document.getElementById('sample')
+           element.innerHTML = '<h1>'+hoge+'</h1>'
+           console.log(hoge);
         }
 
 </script>

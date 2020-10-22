@@ -19,14 +19,16 @@ public class WebAppInterface {
 
 	/**
 	 * Show a toast from the web page
+	 *
+	 * @return
 	 */
 	@JavascriptInterface
-	public void showToast(String toast) {
+	public String showToast(String toast) {
 //		MainActivityから呼び出し
 		jp.ac.hal.webhogehoge.MainActivity MA = new jp.ac.hal.webhogehoge.MainActivity();
 		String test = MainActivity.sampleText();
 		Log.d("data from client", "showToast: " + toast);
 		Toast.makeText(mContext, test, Toast.LENGTH_SHORT).show();
-
+		return test;
 	}
 }

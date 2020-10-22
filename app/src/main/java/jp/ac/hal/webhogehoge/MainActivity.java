@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
 		//端末がBluetoothに対応しているか
 		if (BluetoothAdapter.getDefaultAdapter() == null) {
-			Toast.makeText(this, "Bluetoothに対応していない端末です", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "The device does not support Bluetooth.", Toast.LENGTH_SHORT).show();
 			finish();
 		}
 
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 				Log.d("search-device", deviceName + deviceHardwareAddress);
 			}
 		} else {
-			Log.d("search-device", "ペアリングないよ！！");
+			Log.d("search-device", "pairing device is not found");
 		}
 	}
 

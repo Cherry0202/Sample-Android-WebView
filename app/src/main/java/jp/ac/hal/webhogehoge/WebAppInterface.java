@@ -21,9 +21,10 @@ public class WebAppInterface {
 	 */
 	@JavascriptInterface
 	public void showToast(String toast) {
-		Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 //		MainActivityから呼び出し
 		jp.ac.hal.webhogehoge.MainActivity MA = new jp.ac.hal.webhogehoge.MainActivity();
-		MA.sampleText();
+		String test = MainActivity.sampleText();
+		Toast.makeText(mContext, test, Toast.LENGTH_SHORT).show();
+
 	}
 }

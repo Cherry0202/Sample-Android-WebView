@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 			for (BluetoothDevice device : pairedDevices) {
 				String deviceName = device.getName();
 				String deviceHardwareAddress = device.getAddress(); // MAC address
-				Log.d("search-device", deviceName + deviceHardwareAddress);
+				Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
 			}
 		} else {
 			Log.d("search-device", "pairing device is not found");
@@ -114,9 +114,10 @@ public class MainActivity extends AppCompatActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	void sampleText() {
-		System.out.println("hogehoge");
+	public static String sampleText() {
 		Log.d("debug", "呼び出されたよ！！");
+		String javaText;
+		return javaText = "sampleText";
 	}
 
 }

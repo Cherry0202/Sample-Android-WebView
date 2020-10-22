@@ -20,7 +20,11 @@ public class MainActivity extends AppCompatActivity {
 	private static final int REQUEST_ENABLE_BLUETOOTH = 1;
 
 	// メンバー変数
-	private BluetoothAdapter mBluetoothAdapter;    // BluetoothAdapter : Bluetooth処理で必要
+	//BTの設定
+	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
+//	private BluetoothDevice mBtDevice; //BTデバイス
+//	private BluetoothSocket mBtSocket; //BTソケット
+//	private OutputStream mOutput; //出力ストリーム
 
 
 	WebView myWebView = null;
@@ -35,18 +39,25 @@ public class MainActivity extends AppCompatActivity {
 //      Bluetoothアダプタ取得
 		BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 		mBluetoothAdapter = bluetoothManager.getAdapter();
-//		Android端末がBluetoothをサポートしていない
-		if (null == mBluetoothAdapter) {
-			Toast.makeText(this, R.string.bluetooth_is_not_supported, Toast.LENGTH_SHORT).show();
-//          アプリ終了
+
+
+		//端末がBluetoothに対応しているか
+		if (BluetoothAdapter.getDefaultAdapter() == null) {
+			Toast.makeText(this, "Bluetoothに対応していない端末です", Toast.LENGTH_SHORT).show();
 			finish();
-			return;
 		}
+		//Bluetoothが有効であるか
+		if (!mBluetoothAdapter.isEnabled()) {
+			Toast.makeText(this, "BluetoothをONにします", Toast.LENGTH_SHORT).show();
+			mBluetoothAdapter.enable();
+		}
+
+//		以下 WebView関連
 
 		// WebView呼び出し
 		myWebView = (WebView) findViewById(R.id.webView);
 		myWebView.setWebViewClient(new WebViewClient());
-//        webview内でのjsを許可
+//        WebView内でのjsを許可
 		myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
 		myWebView.addJavascriptInterface(new WebAppInterface(this), "Android");

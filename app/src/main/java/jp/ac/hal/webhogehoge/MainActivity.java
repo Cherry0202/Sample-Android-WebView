@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +16,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Set;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
 	//BTの設定
 	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
 	private BluetoothDevice mBtDevice; //BTデバイス
-//	private BluetoothSocket mBtSocket; //BTソケット
-//	private OutputStream mOutput; //出力ストリーム
-
+	private BluetoothSocket mBtSocket; //BTソケット
+	private OutputStream mOutput; //出力ストリーム
+	private UUID MY_UUID; // uuid
 
 	WebView myWebView = null;
 
@@ -53,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 //		ペアリングしているデバイスがあるか
-		findDevice();
+		String deviceHardwareAddress = findDevice();
+		connectBluetoothDevice(deviceHardwareAddress);
+
+//		send();
 
 //		以下 WebView関連
 
@@ -85,22 +92,6 @@ public class MainActivity extends AppCompatActivity {
 		startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
 	}
 
-	//	ペアリングしているデバイスがあるか
-	private void findDevice() {
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-		if (pairedDevices.size() > 0) {
-			// There are paired devices. Get the name and address of each paired device.
-			for (BluetoothDevice device : pairedDevices) {
-				String deviceName = device.getName();
-				String deviceHardwareAddress = device.getAddress(); // MAC address
-				Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
-			}
-		} else {
-			Log.d("search-device", "pairing device is not found");
-		}
-	}
-
 	// 機能の有効化ダイアログの操作結果
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -120,4 +111,62 @@ public class MainActivity extends AppCompatActivity {
 		return javaText = "sampleText";
 	}
 
+
+	//	以下bluetooth関連
+
+	//	ペアリングしているデバイスがあるか
+	private String findDevice() {
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+		if (pairedDevices.size() > 0) {
+			// There are paired devices. Get the name and address of each paired device.
+			for (BluetoothDevice device : pairedDevices) {
+				String deviceName = device.getName();
+				String deviceHardwareAddress = device.getAddress(); // MAC address
+				Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
+				return deviceHardwareAddress;
+			}
+		} else {
+			Log.d("search-device", "pairing device is not found");
+		}
+		return null;
+	}
+
+	private void connectBluetoothDevice(String deviceHardwareAddress) {
+		mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
+		try {
+			// 接続に使用するプロファイルを指定
+			MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+			mBtSocket = mBtDevice.createRfcommSocketToServiceRecord(MY_UUID);
+			Log.d("debug", "connectBluetoothDevice: tryしてOK！");
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.d("debug", "connectBluetoothDevice: out!!");
+		}
+		// ソケットを接続する
+		try {
+			Log.d("debug", "connectBluetoothDevice: ソケット接続tryしたよ");
+//			TODO ここでエラー
+			mBtSocket.connect();
+			Log.d("debug", "connectBluetoothDevice: ソケット接続connectしたよ");
+//			mOutput = mBtSocket.getOutputStream(); // 出力ストリームオブジェクトを得る
+//			Log.d("debug", "connectBluetoothDevice: 出力ストリームオブジェクトを得る");
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.d("debug", "connectBluetoothDevice:" + String.valueOf(e));
+		}
+	}
+
+//	public void send() {
+//		// TODO Auto-generated method stub
+//		try {
+//			Log.d("debug", "send: 出力ストリームtry");
+//			mOutput.write('a');
+//			Log.d("debug", "a送信いたよ");
+//		} catch (IOException e) {
+//			Log.d("debug", "send:" + String.valueOf(e));
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 }

@@ -57,8 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 //		ペアリングしているデバイスがあるか
-		String deviceHardwareAddress = findDevice();
-		connectBluetoothDevice(deviceHardwareAddress);
+//		String deviceHardwareAddress = findDevice();
+////		connectBluetoothDevice(deviceHardwareAddress);
+		ConnectThread CT = new ConnectThread(mBtDevice);
+		CT.run();
 
 //		send();
 
@@ -114,65 +116,139 @@ public class MainActivity extends AppCompatActivity {
 
 	//	以下bluetooth関連
 
-	//	ペアリングしているデバイスがあるか
-	private String findDevice() {
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-		if (pairedDevices.size() > 0) {
-			// There are paired devices. Get the name and address of each paired device.
-			for (BluetoothDevice device : pairedDevices) {
-				String deviceName = device.getName();
-				String deviceHardwareAddress = device.getAddress(); // MAC address
-				Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
-				return deviceHardwareAddress;
-			}
-		} else {
-			Log.d("search-device", "pairing device is not found");
-		}
-		return null;
-	}
-
-	private void connectBluetoothDevice(String deviceHardwareAddress) {
-		mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
-		try {
-			// 接続に使用するプロファイルを指定
-			MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-			mBtSocket = mBtDevice.createRfcommSocketToServiceRecord(MY_UUID);
-			Log.d("debug", "connectBluetoothDevice: tryしてOK！");
-		} catch (IOException e) {
-			e.printStackTrace();
-			Log.d("debug", "connectBluetoothDevice: out!!");
-		}
-		// ソケットを接続する
-		try {
-			Log.d("debug", "connectBluetoothDevice: ソケット接続tryしたよ");
-			// Cancel discovery because it otherwise slows down the connection.
-			mBluetoothAdapter.cancelDiscovery();
-//			TODO ここでエラー
-			mBtSocket.connect();
-			Log.d("debug", "connectBluetoothDevice: ソケット接続connectしたよ");
-//			mOutput = mBtSocket.getOutputStream(); // 出力ストリームオブジェクトを得る
-//			Log.d("debug", "connectBluetoothDevice: 出力ストリームオブジェクトを得る");
-		} catch (IOException e) {
-			try {
-				mBtSocket.close();
-				Log.d("debug", "socket close");
-			} catch (IOException closeException) {
-				Log.d("debug", "connectBluetoothDevice:" + closeException);
-			}
-		}
-	}
-
-//	public void send() {
-//		// TODO Auto-generated method stub
+//	//	ペアリングしているデバイスがあるか
+//	private String findDevice() {
+//		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+//
+//		if (pairedDevices.size() > 0) {
+//			// There are paired devices. Get the name and address of each paired device.
+//			for (BluetoothDevice device : pairedDevices) {
+//				String deviceName = device.getName();
+//				String deviceHardwareAddress = device.getAddress(); // MAC address
+//				Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
+//				return deviceHardwareAddress;
+//			}
+//		} else {
+//			Log.d("search-device", "pairing device is not found");
+//		}
+//		return null;
+//	}
+//
+//	private void connectBluetoothDevice(String deviceHardwareAddress) {
+//		mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
 //		try {
-//			Log.d("debug", "send: 出力ストリームtry");
-//			mOutput.write('a');
-//			Log.d("debug", "a送信いたよ");
+//			// 接続に使用するプロファイルを指定
+//			MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+//			mBtSocket = mBtDevice.createRfcommSocketToServiceRecord(MY_UUID);
+//			Log.d("debug", "connectBluetoothDevice: tryしてOK！");
 //		} catch (IOException e) {
-//			Log.d("debug", "send:" + String.valueOf(e));
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
+//			Log.d("debug", "connectBluetoothDevice: out!!");
+//		}
+//		// ソケットを接続する
+//		try {
+//			Log.d("debug", "connectBluetoothDevice: ソケット接続tryしたよ");
+//			// Cancel discovery because it otherwise slows down the connection.
+//			mBluetoothAdapter.cancelDiscovery();
+////			TODO ここでエラー
+//			mBtSocket.connect();
+//			Log.d("debug", "connectBluetoothDevice: ソケット接続connectしたよ");
+////			mOutput = mBtSocket.getOutputStream(); // 出力ストリームオブジェクトを得る
+////			Log.d("debug", "connectBluetoothDevice: 出力ストリームオブジェクトを得る");
+//		} catch (IOException e) {
+//			try {
+//				mBtSocket.close();
+//				Log.d("debug", "socket close");
+//			} catch (IOException closeException) {
+//				Log.d("debug", "connectBluetoothDevice:" + closeException);
+//			}
 //		}
 //	}
+
+
+	// android
+	private class ConnectThread extends Thread {
+		private static final String TAG = "debug";
+		private final BluetoothSocket mmSocket;
+		private final BluetoothDevice mmDevice;
+
+		//	ペアリングしているデバイスがあるか
+		private String findDevice() {
+			Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+			if (pairedDevices.size() > 0) {
+				// There are paired devices. Get the name and address of each paired device.
+				for (BluetoothDevice device : pairedDevices) {
+					String deviceName = device.getName();
+					String deviceHardwareAddress = device.getAddress(); // MAC address
+					Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
+					return deviceHardwareAddress;
+				}
+			} else {
+				Log.d("search-device", "pairing device is not found");
+				finish();
+			}
+			return null;
+		}
+
+
+		ConnectThread(BluetoothDevice device) {
+			Log.d(TAG, "ConnectThread: 呼び出されたよ");
+			// Use a temporary object that is later assigned to mmSocket
+			// because mmSocket is final.
+			BluetoothSocket tmp = null;
+			String deviceHardwareAddress = findDevice();
+			assert deviceHardwareAddress != null;
+			Log.d(TAG, deviceHardwareAddress);
+			mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
+			mmDevice = device;
+
+			try {
+				Log.d(TAG, "ConnectThread: try!!");
+				// Get a BluetoothSocket to connect with the given BluetoothDevice.
+				// MY_UUID is the app's UUID string, also used in the server code.
+				MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+				Log.d(TAG, String.valueOf(MY_UUID));
+				tmp = mBtDevice.createRfcommSocketToServiceRecord(MY_UUID);
+				Log.d(TAG, String.valueOf(tmp));
+			} catch (IOException e) {
+				Log.e(TAG, "Socket's create() method failed", e);
+			}
+			mmSocket = tmp;
+			Log.d(TAG, "socket準備完了");
+		}
+
+		public void run() {
+			// Cancel discovery because it otherwise slows down the connection.
+			mBluetoothAdapter.cancelDiscovery();
+			Log.d(TAG, "run: runだよ");
+
+			try {
+				// Connect to the remote device through the socket. This call blocks
+				// until it succeeds or throws an exception.
+				Log.d(TAG, "run: ソケット接続try中");
+				mmSocket.connect();
+			} catch (IOException connectException) {
+				// Unable to connect; close the socket and return.
+				try {
+					Log.d(TAG, "run: ソケット接続残念！");
+					mmSocket.close();
+				} catch (IOException closeException) {
+					Log.e(TAG, "Could not close the client socket", closeException);
+				}
+				return;
+			}
+
+			// TODO 送信処理を追加
+		}
+
+		// Closes the client socket and causes the thread to finish.
+		public void cancel() {
+			try {
+				mmSocket.close();
+			} catch (IOException e) {
+				Log.e(TAG, "Could not close the client socket", e);
+			}
+		}
+	}
 }

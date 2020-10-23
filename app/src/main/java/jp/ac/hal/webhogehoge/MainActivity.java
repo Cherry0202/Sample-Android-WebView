@@ -146,14 +146,20 @@ public class MainActivity extends AppCompatActivity {
 		// ソケットを接続する
 		try {
 			Log.d("debug", "connectBluetoothDevice: ソケット接続tryしたよ");
+			// Cancel discovery because it otherwise slows down the connection.
+			mBluetoothAdapter.cancelDiscovery();
 //			TODO ここでエラー
 			mBtSocket.connect();
 			Log.d("debug", "connectBluetoothDevice: ソケット接続connectしたよ");
 //			mOutput = mBtSocket.getOutputStream(); // 出力ストリームオブジェクトを得る
 //			Log.d("debug", "connectBluetoothDevice: 出力ストリームオブジェクトを得る");
 		} catch (IOException e) {
-			e.printStackTrace();
-			Log.d("debug", "connectBluetoothDevice:" + String.valueOf(e));
+			try {
+				mBtSocket.close();
+				Log.d("debug", "socket close");
+			} catch (IOException closeException) {
+				Log.d("debug", "connectBluetoothDevice:" + closeException);
+			}
 		}
 	}
 

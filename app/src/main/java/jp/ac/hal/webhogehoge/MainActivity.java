@@ -115,58 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 	//	以下bluetooth関連
-
-//	//	ペアリングしているデバイスがあるか
-//	private String findDevice() {
-//		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-//
-//		if (pairedDevices.size() > 0) {
-//			// There are paired devices. Get the name and address of each paired device.
-//			for (BluetoothDevice device : pairedDevices) {
-//				String deviceName = device.getName();
-//				String deviceHardwareAddress = device.getAddress(); // MAC address
-//				Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
-//				return deviceHardwareAddress;
-//			}
-//		} else {
-//			Log.d("search-device", "pairing device is not found");
-//		}
-//		return null;
-//	}
-//
-//	private void connectBluetoothDevice(String deviceHardwareAddress) {
-//		mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
-//		try {
-//			// 接続に使用するプロファイルを指定
-//			MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-//			mBtSocket = mBtDevice.createRfcommSocketToServiceRecord(MY_UUID);
-//			Log.d("debug", "connectBluetoothDevice: tryしてOK！");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			Log.d("debug", "connectBluetoothDevice: out!!");
-//		}
-//		// ソケットを接続する
-//		try {
-//			Log.d("debug", "connectBluetoothDevice: ソケット接続tryしたよ");
-//			// Cancel discovery because it otherwise slows down the connection.
-//			mBluetoothAdapter.cancelDiscovery();
-////			TODO ここでエラー
-//			mBtSocket.connect();
-//			Log.d("debug", "connectBluetoothDevice: ソケット接続connectしたよ");
-////			mOutput = mBtSocket.getOutputStream(); // 出力ストリームオブジェクトを得る
-////			Log.d("debug", "connectBluetoothDevice: 出力ストリームオブジェクトを得る");
-//		} catch (IOException e) {
-//			try {
-//				mBtSocket.close();
-//				Log.d("debug", "socket close");
-//			} catch (IOException closeException) {
-//				Log.d("debug", "connectBluetoothDevice:" + closeException);
-//			}
-//		}
-//	}
-
-
-	// android
 	private class ConnectThread extends Thread {
 		private static final String TAG = "debug";
 		private final BluetoothSocket mmSocket;
@@ -240,6 +188,11 @@ public class MainActivity extends AppCompatActivity {
 			}
 
 			// TODO 送信処理を追加
+			manageMyConnectedSocket(mmSocket);
+		}
+
+		private void manageMyConnectedSocket(BluetoothSocket mmSocket) {
+			Log.d(TAG, "認証できたよ");
 		}
 
 		// Closes the client socket and causes the thread to finish.

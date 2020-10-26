@@ -172,6 +172,14 @@ public class MainActivity extends AppCompatActivity {
 				// until it succeeds or throws an exception.
 				Log.d(TAG, "run: ソケット接続try中");
 				mmSocket.connect();
+				try {
+					mOutput = mmSocket.getOutputStream();
+					Log.d(TAG, "出力用オブジェクトを呼び出し");
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.d(TAG, "run: " + e);
+				}
+
 
 			} catch (IOException connectException) {
 				// Unable to connect; close the socket and return.
@@ -190,13 +198,19 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		private void manageMyConnectedSocket(BluetoothSocket mmSocket) {
+			//文字列を送信する
+			byte[] bytes = {};
+			String str = "Hello World!";
+			bytes = str.getBytes();
 			try {
-				mOutput = mmSocket.getOutputStream();
-				Log.d(TAG, "出力用オブジェクトを呼び出し");
+//				送信
+				mOutput.write(bytes);
+				Log.d(TAG, "送信！");
 			} catch (IOException e) {
+				Log.d(TAG, "送信エラー:" + e);
 				e.printStackTrace();
-				Log.d(TAG, "run: " + e);
 			}
+
 		}
 
 		// Closes the client socket and causes the thread to finish.

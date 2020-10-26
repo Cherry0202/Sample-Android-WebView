@@ -55,10 +55,6 @@ public class MainActivity extends AppCompatActivity {
 			finish();
 		}
 
-
-//		ペアリングしているデバイスがあるか
-//		String deviceHardwareAddress = findDevice();
-////		connectBluetoothDevice(deviceHardwareAddress);
 		ConnectThread CT = new ConnectThread(mBtDevice);
 		CT.run();
 
@@ -176,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
 				// until it succeeds or throws an exception.
 				Log.d(TAG, "run: ソケット接続try中");
 				mmSocket.connect();
+
 			} catch (IOException connectException) {
 				// Unable to connect; close the socket and return.
 				try {
@@ -186,13 +183,20 @@ public class MainActivity extends AppCompatActivity {
 				}
 				return;
 			}
-
+			Log.d(TAG, "認証できたよ");
+			//				出力用オブジェクトを湯徳
 			// TODO 送信処理を追加
 			manageMyConnectedSocket(mmSocket);
 		}
 
 		private void manageMyConnectedSocket(BluetoothSocket mmSocket) {
-			Log.d(TAG, "認証できたよ");
+			try {
+				mOutput = mmSocket.getOutputStream();
+				Log.d(TAG, "出力用オブジェクトを呼び出し");
+			} catch (IOException e) {
+				e.printStackTrace();
+				Log.d(TAG, "run: " + e);
+			}
 		}
 
 		// Closes the client socket and causes the thread to finish.

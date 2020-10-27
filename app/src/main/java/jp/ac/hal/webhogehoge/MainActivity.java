@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
 		ConnectThread CT = new ConnectThread(mBtDevice);
 		CT.run();
 
-//		send();
+		// 送信処理
+		CT.send();
 
 //		以下 WebView関連
 
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 			} catch (IOException connectException) {
 				// Unable to connect; close the socket and return.
 				try {
-					Log.d(TAG, "run: ソケット接続残念！");
+					Log.d(TAG, "run: ソケット接続残念！" + connectException);
 					mmSocket.close();
 				} catch (IOException closeException) {
 					Log.e(TAG, "Could not close the client socket", closeException);
@@ -192,18 +193,15 @@ public class MainActivity extends AppCompatActivity {
 				return;
 			}
 			Log.d(TAG, "認証できたよ");
-			//				出力用オブジェクトを湯徳
-			// TODO 送信処理を追加
-			manageMyConnectedSocket(mmSocket);
 		}
 
-		private void manageMyConnectedSocket(BluetoothSocket mmSocket) {
+		//		BluetoothSocket mmSocket
+		private void send() {
 			//文字列を送信する
 			byte[] bytes = {};
 			String str = "Hello World!";
 			bytes = str.getBytes();
 			try {
-//				送信
 				mOutput.write(bytes);
 				Log.d(TAG, "送信！");
 			} catch (IOException e) {

@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 	private BluetoothDevice mBtDevice; //BTデバイス
 	private BluetoothSocket mBtSocket; //BTソケット
 	private OutputStream mOutput; //出力ストリーム
-	private InputStream mInput; //出力ストリーム
+	private InputStream mInput; //読み込みストリーム
 	private UUID MY_UUID; // uuid
 
 	WebView myWebView = null;
@@ -58,11 +58,6 @@ public class MainActivity extends AppCompatActivity {
 			finish();
 		}
 
-		ConnectThread CT = new ConnectThread(mBtDevice);
-		CT.run();
-
-		// 送信処理
-		CT.send();
 
 //		以下 WebView関連
 
@@ -73,7 +68,12 @@ public class MainActivity extends AppCompatActivity {
 		myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
 		myWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
+
 		myWebView.loadUrl("file:///android_asset/index2.html");
+
+		ConnectThread CT = new ConnectThread(mBtDevice);
+		CT.run();
+
 	}
 
 	//　初回表示、ポーズからの復帰時
@@ -111,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
 		Log.d(TAG, "呼び出されたよ！！");
 		String javaText;
 		return javaText = "sampleText";
+	}
+
+	public void sampleSend() {
+		Log.d(TAG, "sampleSend");
+		ConnectThread CT = new ConnectThread(mBtDevice);
+		CT.send2();
 	}
 
 
@@ -206,6 +212,9 @@ public class MainActivity extends AppCompatActivity {
 				return;
 			}
 			Log.d(TAG, "認証できたよ");
+//			送信処理
+			send();
+			read(mInput);
 		}
 
 		//		BluetoothSocket mmSocket
@@ -220,6 +229,50 @@ public class MainActivity extends AppCompatActivity {
 			} catch (IOException e) {
 				Log.d(TAG, "送信エラー:" + e);
 				e.printStackTrace();
+			}
+
+		}
+
+		private void send2() {
+			Log.d(TAG, "send2");
+			//文字列を送信する
+			byte[] bytes = {};
+			String str = "Hello World2!";
+			bytes = str.getBytes();
+			try {
+				mOutput.write(bytes);
+				Log.d(TAG, "送信！");
+			} catch (IOException e) {
+				Log.d(TAG, "送信エラー:" + e);
+				e.printStackTrace();
+			}
+		}
+
+
+		private void read(InputStream mInput) {
+			//			受信処理
+			while (true) {
+				if (mInput != null) {
+					Log.d(TAG, "受信待機中...");
+					// InputStreamのバッファを格納
+					byte[] buffer = new byte[1024];
+					// 取得したバッファのサイズを格納
+					int bytes;
+					// InputStreamの読み込み
+					try {
+						bytes = mInput.read(buffer);
+						Log.d(TAG, "input-stream読み込み");
+						String msg = new String(buffer, 0, bytes);
+						Log.d(TAG, "manageMyConnectedSocket: " + msg);
+						mInput = null;
+					} catch (IOException e) {
+						e.printStackTrace();
+						Log.d(TAG, "読み込み失敗" + e);
+						break;
+					}
+				} else {
+					break;
+				}
 			}
 
 		}

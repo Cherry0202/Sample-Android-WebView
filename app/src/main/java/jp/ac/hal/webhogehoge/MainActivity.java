@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 	private BluetoothDevice mBtDevice; //BTデバイス
 	private BluetoothSocket mBtSocket; //BTソケット
 	private OutputStream mOutput; //出力ストリーム
+	private InputStream mInput; //出力ストリーム
 	private UUID MY_UUID; // uuid
 
 	WebView myWebView = null;
@@ -180,6 +181,14 @@ public class MainActivity extends AppCompatActivity {
 					Log.d(TAG, "出力用オブジェクトを呼び出し中");
 					mOutput = mmSocket.getOutputStream();
 					Log.d(TAG, "出力用オブジェクトを呼び出し");
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.d(TAG, "run: " + e);
+				}
+				try {
+					Log.d(TAG, "読み込み用オブジェクトを呼び出し中");
+					mInput = mmSocket.getInputStream();
+					Log.d(TAG, "読み込み用オブジェクトを呼び出し");
 				} catch (IOException e) {
 					e.printStackTrace();
 					Log.d(TAG, "run: " + e);

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 	//    定数
 // Bluetooth機能の有効化要求時の識別コード
 	private static final int REQUEST_ENABLE_BLUETOOTH = 1;
+	private static final String TAG = "debug";
 
 	// メンバー変数
 	//BTの設定
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public static String sampleText() {
-		Log.d("debug", "呼び出されたよ！！");
+		Log.d(TAG, "呼び出されたよ！！");
 		String javaText;
 		return javaText = "sampleText";
 	}
@@ -113,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
 	//	以下bluetooth関連
 	private class ConnectThread extends Thread {
-		private static final String TAG = "debug";
 		private final BluetoothSocket mmSocket;
 		private final BluetoothDevice mmDevice;
 
@@ -124,13 +125,14 @@ public class MainActivity extends AppCompatActivity {
 			if (pairedDevices.size() > 0) {
 				// There are paired devices. Get the name and address of each paired device.
 				for (BluetoothDevice device : pairedDevices) {
+					Log.d(TAG, "device name: " + device.getName());
 					String deviceName = device.getName();
-					String deviceHardwareAddress = device.getAddress(); // MAC address
-					Log.d("search-device", "device name:" + deviceName + "mac address:" + deviceHardwareAddress);
-					return deviceHardwareAddress;
+					Log.d(TAG, "mac address:" + device.getAddress());
+//					TODO Occulusのdeviceのだった時
+					return device.getAddress();
 				}
 			} else {
-				Log.d("search-device", "pairing device is not found");
+				Log.d(TAG, "pairing device is not found");
 				finish();
 			}
 			return null;
@@ -143,8 +145,9 @@ public class MainActivity extends AppCompatActivity {
 			// because mmSocket is final.
 			BluetoothSocket tmp = null;
 			String deviceHardwareAddress = findDevice();
-			assert deviceHardwareAddress != null;
-			Log.d(TAG, deviceHardwareAddress);
+			if (deviceHardwareAddress != null) {
+				Log.d(TAG, deviceHardwareAddress);
+			}
 			mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
 			mmDevice = device;
 
@@ -174,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
 				Log.d(TAG, "run: ソケット接続try中");
 				mmSocket.connect();
 				try {
+					Log.d(TAG, "出力用オブジェクトを呼び出し中");
 					mOutput = mmSocket.getOutputStream();
 					Log.d(TAG, "出力用オブジェクトを呼び出し");
 				} catch (IOException e) {

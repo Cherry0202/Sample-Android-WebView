@@ -73,6 +73,18 @@ public class MainActivity extends AppCompatActivity {
 		ConnectThread CT = new ConnectThread(mBtDevice);
 		CT.run();
 
+
+//		非同期呼び出し
+		IncomingMessageTask messageTask = new IncomingMessageTask();
+		Log.d(TAG, "incom 呼び出し");
+		messageTask.setOnCallbacktask(new IncomingMessageTask.CallBackTask() {
+			@Override
+			public void CallBack(String result) {
+				Log.d(TAG, "callbackだよ！: " + result);
+			}
+		});
+		Log.d(TAG, "task実行！！");
+		messageTask.execute(CT.mInput);
 	}
 
 	//　初回表示、ポーズからの復帰時
@@ -123,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 	private class ConnectThread extends Thread {
 		private final BluetoothSocket mmSocket;
 		private final BluetoothDevice mmDevice;
-		private InputStream mInput; //読み込みストリーム
+		public InputStream mInput; //読み込みストリーム
 		private OutputStream mOutput; //出力ストリーム
 
 		//	ペアリングしているデバイスがあるか
@@ -292,11 +304,14 @@ public class MainActivity extends AppCompatActivity {
 //	TODO 非同期受信
 
 	//	非同期処理のクラス
-	private class IncomingMessageTask extends AsyncTask<InputStream, Integer, String> {
+	private static class IncomingMessageTask extends AsyncTask<InputStream, Void, String> {
+
+
+		private CallBackTask mCallBackTask;
 
 		@Override
 		protected String doInBackground(InputStream... mInput) {
-			Log.d(TAG, "非同期受信待機中...");
+			Log.d(TAG, "非同期中...");
 			String msg = "あきおから受け取ったbyteを文字列変換させた値";
 			return msg;
 		}
@@ -305,8 +320,22 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		protected void onPostExecute(String msg) {
-//			ここでフロントに送信処理実行
+			Log.d(TAG, "on post execute!!");
+			mCallBackTask.CallBack(msg);
 		}
+
+
+		public void setOnCallbacktask(CallBackTask t_object) {
+			Log.d(TAG, "set on callback task");
+			mCallBackTask = t_object;
+		}
+
+		interface CallBackTask {
+			void CallBack(String msg);
+		}
+
+
 	}
+
 
 }

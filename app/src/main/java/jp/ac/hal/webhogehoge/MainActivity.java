@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
@@ -34,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
 	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
 	private BluetoothDevice mBtDevice; //BTデバイス
 	private BluetoothSocket mBtSocket; //BTソケット
-	private OutputStream mOutput; //出力ストリーム
-	private InputStream mInput; //読み込みストリーム
 	private UUID MY_UUID; // uuid
 
 	WebView myWebView = null;
@@ -124,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
 	private class ConnectThread extends Thread {
 		private final BluetoothSocket mmSocket;
 		private final BluetoothDevice mmDevice;
+		private InputStream mInput; //読み込みストリーム
+		private OutputStream mOutput; //出力ストリーム
 
 		//	ペアリングしているデバイスがあるか
 		private String findDevice() {
@@ -250,8 +251,8 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 
+		//			受信処理
 		private void read(InputStream mInput) {
-			//			受信処理
 			while (true) {
 				if (mInput != null) {
 					Log.d(TAG, "受信待機中...");
@@ -287,4 +288,25 @@ public class MainActivity extends AppCompatActivity {
 			}
 		}
 	}
+
+//	TODO 非同期受信
+
+	//	非同期処理のクラス
+	private class IncomingMessageTask extends AsyncTask<InputStream, Integer, String> {
+
+		@Override
+		protected String doInBackground(InputStream... mInput) {
+			Log.d(TAG, "非同期受信待機中...");
+			String msg = "あきおから受け取ったbyteを文字列変換させた値";
+			return msg;
+		}
+
+		protected void onProgressUpdate(Integer... progress) {
+		}
+
+		protected void onPostExecute(String msg) {
+//			ここでフロントに送信処理実行
+		}
+	}
+
 }

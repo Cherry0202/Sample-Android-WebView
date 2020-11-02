@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
 			Log.d(TAG, "認証できたよ");
 //			送信処理
 			send();
+//			受信中...
 			read(mInput);
 		}
 
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 		private void send() {
 			//文字列を送信する
 			byte[] bytes = {};
-			String str = "Hello World!";
+			String str = "Hello Server!!!";
 			bytes = str.getBytes();
 			try {
 				mOutput.write(bytes);

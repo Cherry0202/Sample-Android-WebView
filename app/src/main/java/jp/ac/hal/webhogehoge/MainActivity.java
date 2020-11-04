@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
@@ -29,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
 // Bluetooth機能の有効化要求時の識別コード
 	private static final int REQUEST_ENABLE_BLUETOOTH = 1;
 	private static final String TAG = "debug";
+	private boolean isRepeat = true;
+	//繰り返し間隔（ミリ秒）
+	private final int REPEAT_INTERVAL = 1000;
 
 	// メンバー変数
 	//BTの設定
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 	private BluetoothDevice mBtDevice; //BTデバイス
 	private BluetoothSocket mBtSocket; //BTソケット
 	private UUID MY_UUID; // uuid
+
+	private Thread thread;
 
 	WebView myWebView = null;
 
@@ -70,21 +74,32 @@ public class MainActivity extends AppCompatActivity {
 
 		myWebView.loadUrl("file:///android_asset/index2.html");
 
-		ConnectThread CT = new ConnectThread(mBtDevice);
-		CT.run();
+
+		final ConnectThread CT = new ConnectThread(mBtDevice);
+		CT.start();
 
 
-//		非同期呼び出し
-		IncomingMessageTask messageTask = new IncomingMessageTask();
-		Log.d(TAG, "incom 呼び出し");
-		messageTask.setOnCallbacktask(new IncomingMessageTask.CallBackTask() {
+		Runnable looper = new Runnable() {
 			@Override
-			public void CallBack(String result) {
-				Log.d(TAG, "callbackだよ！: " + result);
+			public void run() {
+
+//2.isRepeatがtrueなら処理を繰り返す
+				while (isRepeat) {
+					try {
+						Thread.sleep(REPEAT_INTERVAL);
+					} catch (InterruptedException e) {
+						Log.e("looper", "InterruptedException");
+					}
+
+//3.繰り返し処理
+					doSomething();
+				}
 			}
-		});
-		Log.d(TAG, "task実行！！");
-		messageTask.execute(CT.mInput);
+		};
+
+		//1.スレッド起動
+		thread = new Thread(looper);
+		thread.start();
 	}
 
 	//　初回表示、ポーズからの復帰時
@@ -128,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
 		Log.d(TAG, "sampleSend");
 		ConnectThread CT = new ConnectThread(mBtDevice);
 		CT.send2();
+	}
+
+	private void doSomething() {
+		Log.i(TAG, "thread");
 	}
 
 
@@ -300,42 +319,4 @@ public class MainActivity extends AppCompatActivity {
 			}
 		}
 	}
-
-//	TODO 非同期受信
-
-	//	非同期処理のクラス
-	private static class IncomingMessageTask extends AsyncTask<InputStream, Void, String> {
-
-
-		private CallBackTask mCallBackTask;
-
-		@Override
-		protected String doInBackground(InputStream... mInput) {
-			Log.d(TAG, "非同期中...");
-			String msg = "あきおから受け取ったbyteを文字列変換させた値";
-			return msg;
-		}
-
-		protected void onProgressUpdate(Integer... progress) {
-		}
-
-		protected void onPostExecute(String msg) {
-			Log.d(TAG, "on post execute!!");
-			mCallBackTask.CallBack(msg);
-		}
-
-
-		public void setOnCallbacktask(CallBackTask t_object) {
-			Log.d(TAG, "set on callback task");
-			mCallBackTask = t_object;
-		}
-
-		interface CallBackTask {
-			void CallBack(String msg);
-		}
-
-
-	}
-
-
 }

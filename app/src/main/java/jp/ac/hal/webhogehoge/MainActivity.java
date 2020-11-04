@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 	private UUID MY_UUID; // uuid
 
 	private Thread thread;
+	private ConnectDevice connectDevice;
 
 	WebView myWebView = null;
 
@@ -74,15 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
 		myWebView.loadUrl("file:///android_asset/index2.html");
 
-
-		final ConnectThread CT = new ConnectThread(mBtDevice);
-		CT.start();
-
+		final ConnectDevice CD = new ConnectDevice(mBtDevice);
+		CD.send();
+//		CD.read(CD.mInput);
 
 		Runnable looper = new Runnable() {
 			@Override
 			public void run() {
-
 //2.isRepeatがtrueなら処理を繰り返す
 				while (isRepeat) {
 					try {
@@ -90,9 +89,34 @@ public class MainActivity extends AppCompatActivity {
 					} catch (InterruptedException e) {
 						Log.e("looper", "InterruptedException");
 					}
-
 //3.繰り返し処理
-					doSomething();
+					while (true) {
+						Log.d(TAG, "受信待機中...");
+						if (CD.mInput != null) {
+							Log.d(TAG, "受信中...");
+							// InputStreamのバッファを格納
+							byte[] buffer = new byte[1024];
+							// 取得したバッファのサイズを格納
+							int bytes;
+							// InputStreamの読み込み
+							try {
+								Log.d(TAG, "input-stream読み込み1");
+								bytes = CD.mInput.read(buffer);
+								Log.d(TAG, "input-stream読み込み2");
+								String msg = new String(buffer, 0, bytes);
+								Log.d(TAG, "manageMyConnectedSocket: " + msg);
+//								CD.mInput = null;
+//								Log.d(TAG, "nullにしたよ");
+							} catch (IOException e) {
+								e.printStackTrace();
+								Log.d(TAG, "読み込み失敗" + e);
+								break;
+							}
+						} else {
+							Log.d(TAG, "送られてないよ！");
+							break;
+						}
+					}
 				}
 			}
 		};
@@ -141,17 +165,42 @@ public class MainActivity extends AppCompatActivity {
 
 	public void sampleSend() {
 		Log.d(TAG, "sampleSend");
-		ConnectThread CT = new ConnectThread(mBtDevice);
-		CT.send2();
+		ConnectDevice CD = new ConnectDevice(mBtDevice);
+		CD.send2();
 	}
 
-	private void doSomething() {
-		Log.i(TAG, "thread");
+	private void inComingMessage(InputStream mInput) {
+		Log.d(TAG, "受信待機中...");
+		while (true) {
+			if (mInput != null) {
+				Log.d(TAG, "minputになんか入ってるよ！");
+				// InputStreamのバッファを格納
+				byte[] buffer = new byte[1024];
+				// 取得したバッファのサイズを格納
+				int bytes;
+				// InputStreamの読み込み
+				try {
+					bytes = mInput.read(buffer);
+					Log.d(TAG, "input-stream読み込み");
+					String msg = new String(buffer, 0, bytes);
+					Log.d(TAG, "manageMyConnectedSocket: " + msg);
+					mInput = null;
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.d(TAG, "読み込み失敗" + e);
+					break;
+				}
+			} else {
+				Log.d(TAG, "なんの情報もおないよ...");
+				break;
+			}
+		}
+
 	}
 
 
 	//	以下bluetooth関連
-	private class ConnectThread extends Thread {
+	private class ConnectDevice {
 		private final BluetoothSocket mmSocket;
 		private final BluetoothDevice mmDevice;
 		public InputStream mInput; //読み込みストリーム
@@ -178,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 
-		ConnectThread(BluetoothDevice device) {
+		ConnectDevice(BluetoothDevice device) {
 			Log.d(TAG, "ConnectThread: 呼び出されたよ");
 			// Use a temporary object that is later assigned to mmSocket
 			// because mmSocket is final.
@@ -203,10 +252,6 @@ public class MainActivity extends AppCompatActivity {
 			}
 			mmSocket = tmp;
 			Log.d(TAG, "socket準備完了");
-		}
-
-		public void run() {
-			// Cancel discovery because it otherwise slows down the connection.
 			mBluetoothAdapter.cancelDiscovery();
 			Log.d(TAG, "run: runだよ");
 
@@ -244,16 +289,58 @@ public class MainActivity extends AppCompatActivity {
 				return;
 			}
 			Log.d(TAG, "認証できたよ");
-//			送信処理
-			send();
+		}
+
+		public void run() {
+			// Cancel discovery because it otherwise slows down the connection.
+//			mBluetoothAdapter.cancelDiscovery();
+//			Log.d(TAG, "run: runだよ");
+//
+//			try {
+//				// Connect to the remote device through the socket. This call blocks
+//				// until it succeeds or throws an exception.
+//				Log.d(TAG, "run: ソケット接続try中");
+//				mmSocket.connect();
+//				try {
+//					Log.d(TAG, "出力用オブジェクトを呼び出し中");
+//					mOutput = mmSocket.getOutputStream();
+//					Log.d(TAG, "出力用オブジェクトを呼び出し");
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//					Log.d(TAG, "run: " + e);
+//				}
+//				try {
+//					Log.d(TAG, "読み込み用オブジェクトを呼び出し中");
+//					mInput = mmSocket.getInputStream();
+//					Log.d(TAG, "読み込み用オブジェクトを呼び出し");
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//					Log.d(TAG, "run: " + e);
+//				}
+//
+//
+//			} catch (IOException connectException) {
+//				// Unable to connect; close the socket and return.
+//				try {
+//					Log.d(TAG, "run: ソケット接続残念！" + connectException);
+//					mmSocket.close();
+//				} catch (IOException closeException) {
+//					Log.e(TAG, "Could not close the client socket", closeException);
+//				}
+//				return;
+//			}
+//			Log.d(TAG, "認証できたよ");
+////			送信処理
+//			send();
 //			受信中...
-			read(mInput);
+//			read(mInput);
 		}
 
 		//		BluetoothSocket mmSocket
 		private void send() {
 			//文字列を送信する
-			byte[] bytes = {};
+//			byte[] bytes = {};
+			byte[] bytes;
 			String str = "Hello Server!!!";
 			bytes = str.getBytes();
 			try {
@@ -269,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
 		private void send2() {
 			Log.d(TAG, "send2");
 			//文字列を送信する
-			byte[] bytes = {};
+			byte[] bytes;
 			String str = "Hello World2!";
 			bytes = str.getBytes();
 			try {
@@ -293,8 +380,9 @@ public class MainActivity extends AppCompatActivity {
 					int bytes;
 					// InputStreamの読み込み
 					try {
+						Log.d(TAG, "input-stream読み込み1");
 						bytes = mInput.read(buffer);
-						Log.d(TAG, "input-stream読み込み");
+						Log.d(TAG, "input-stream読み込み2");
 						String msg = new String(buffer, 0, bytes);
 						Log.d(TAG, "manageMyConnectedSocket: " + msg);
 						mInput = null;
@@ -311,12 +399,12 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		// Closes the client socket and causes the thread to finish.
-		public void cancel() {
-			try {
-				mmSocket.close();
-			} catch (IOException e) {
-				Log.e(TAG, "Could not close the client socket", e);
-			}
-		}
+//		public void cancel() {
+//			try {
+//				mmSocket.close();
+//			} catch (IOException e) {
+//				Log.e(TAG, "Could not close the client socket", e);
+//			}
+//		}
 	}
 }

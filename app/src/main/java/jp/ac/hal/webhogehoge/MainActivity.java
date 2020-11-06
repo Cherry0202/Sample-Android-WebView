@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 	//繰り返し間隔（ミリ秒）
 	private final int REPEAT_INTERVAL = 1000;
 	private static int status = 0;
+	private String msg = "初期値";
+	private Handler mHandler = new Handler();
 
 	// メンバー変数
 	//BTの設定
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
 		myWebView.loadUrl("file:///android_asset/index2.html");
 
-		final ConnectDevice CD = new ConnectDevice(mBtDevice);
+		final ConnectDevice CD = new ConnectDevice();
 //		デモ用送信
 		CD.send();
 
@@ -169,6 +172,18 @@ public class MainActivity extends AppCompatActivity {
 		send2(mOutput);
 	}
 
+
+	//	jsのfunction呼び出し
+	public void inComingText(final String msgText) {
+		Log.d(TAG, "incommingText: " + msgText);
+		mHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				myWebView.loadUrl("javascript:inComingText('" + msgText + "')");
+			}
+		});
+	}
+
 	private void send2(OutputStream mOutput) {
 		Log.d(TAG, "send2");
 		//文字列を送信する
@@ -187,8 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
 	//	//	以下bluetooth関連
 	public class ConnectDevice {
-		private BluetoothSocket mmSocket;
-		private BluetoothDevice mmDevice;
 		private UUID MY_UUID;
 
 		private static final String Mac = "14:91:38:A0:80:27";
@@ -220,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 
-		ConnectDevice(BluetoothDevice device) {
+		ConnectDevice() {
 			Log.d(TAG, "ConnectThread: 呼び出されたよ" + status);
 			// Use a temporary object that is later assigned to mmSocket
 			// because mmSocket is final.
@@ -232,7 +245,6 @@ public class MainActivity extends AppCompatActivity {
 				}
 
 				mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
-				mmDevice = device;
 
 				try {
 					Log.d(TAG, "ConnectDevice: try!!");
@@ -246,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
 				} catch (IOException e) {
 					Log.e(TAG, "Socket's create() method failed", e);
 				}
-				mmSocket = tmp;
+				BluetoothSocket mmSocket = tmp;
 				Log.d(TAG, "socket準備完了");
 				mBluetoothAdapter.cancelDiscovery();
 				Log.d(TAG, "run: runだよ");
@@ -334,15 +346,6 @@ public class MainActivity extends AppCompatActivity {
 				}
 			}
 
-		}
-
-		//	 Closes the client socket and causes the thread to finish.
-		public void cancel() {
-			try {
-				mmSocket.close();
-			} catch (IOException e) {
-				Log.e(TAG, "Could not close the client socket", e);
-			}
 		}
 	}
 }

@@ -297,10 +297,6 @@ public class MainActivity extends AppCompatActivity {
 			Log.d(TAG, "認証できたよ");
 		}
 
-		public void run() {
-
-		}
-
 		//		BluetoothSocket mmSocket
 		private void send() {
 			//文字列を送信する
@@ -314,7 +310,6 @@ public class MainActivity extends AppCompatActivity {
 				Log.d(TAG, "送信エラー:" + e);
 				e.printStackTrace();
 			}
-
 		}
 
 		private void send2() {
@@ -331,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
 				e.printStackTrace();
 			}
 		}
-
 
 		//			受信処理
 		private void read(InputStream mInput) {

@@ -20,8 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Set;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
 	private boolean isRepeat = true;
 	//繰り返し間隔（ミリ秒）
 	private final int REPEAT_INTERVAL = 1000;
-	private static int status = 0;
+	//	private static int status = 0;
 	private String msg = "初期値";
 	private Handler mHandler = new Handler();
 
 	// メンバー変数
 	//BTの設定
-	public BluetoothAdapter mBluetoothAdapter; //BTアダプタ
+	public static BluetoothAdapter mBluetoothAdapter; //BTアダプタ
 	public static BluetoothDevice mBtDevice; //BTデバイス
 	private BluetoothSocket mBtSocket; //BTソケット
 	static OutputStream mOutput; //出力ストリーム
@@ -199,125 +197,6 @@ public class MainActivity extends AppCompatActivity {
 		} catch (IOException e) {
 			Log.d(TAG, "送信エラー:" + e);
 			e.printStackTrace();
-		}
-	}
-
-
-	//	//	以下bluetooth関連
-	public class ConnectDevice {
-		private static final String Mac = "14:91:38:A0:80:27";
-		private static final String Device = "Fire Tablet1";
-
-		//	ペアリングしているデバイスがあるか
-		private String findDevice() {
-			Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-			if (pairedDevices.size() > 0) {
-				// There are paired devices. Get the name and address of each paired device.
-				for (BluetoothDevice device : pairedDevices) {
-					Log.d(TAG, "device name: " + device.getName());
-					String deviceName = device.getName();
-					Log.d(TAG, "mac address:" + device.getAddress());
-					if (device.getAddress().equals(Mac) && deviceName.equals(Device)) {
-//					TODO Occulusのdeviceのだった時
-						status = 1;
-						return device.getAddress();
-					} else {
-						Log.d(TAG, "違うデバイスです");
-					}
-				}
-			} else {
-				Log.d(TAG, "pairing device is not found");
-				finish();
-			}
-			return null;
-		}
-
-
-		ConnectDevice() {
-			Log.d(TAG, "ConnectThread: 呼び出されたよ" + status);
-			// Use a temporary object that is later assigned to mmSocket
-			// because mmSocket is final.
-			BluetoothSocket tmp = null;
-			if (status == 0) {
-				String deviceHardwareAddress = findDevice();
-				if (deviceHardwareAddress != null) {
-					Log.d(TAG, deviceHardwareAddress);
-				}
-
-				mBtDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
-
-				try {
-					Log.d(TAG, "ConnectDevice: try!!");
-					// Get a BluetoothSocket to connect with the given BluetoothDevice.
-					// MY_UUID is the app's UUID string, also used in the server code.
-					// uuid
-					UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-					Log.d(TAG, String.valueOf(MY_UUID));
-					tmp = mBtDevice.createRfcommSocketToServiceRecord(MY_UUID);
-					Log.d(TAG, String.valueOf(tmp));
-				} catch (IOException e) {
-					Log.e(TAG, "Socket's create() method failed", e);
-				}
-				BluetoothSocket mmSocket = tmp;
-				Log.d(TAG, "socket準備完了");
-				mBluetoothAdapter.cancelDiscovery();
-				Log.d(TAG, "run: runだよ");
-
-
-				try {
-					// Connect to the remote device through the socket. This call blocks
-					// until it succeeds or throws an exception.
-					Log.d(TAG, "run: ソケット接続try中");
-					mmSocket.connect();
-					try {
-						Log.d(TAG, "出力用オブジェクトを呼び出し中");
-						mOutput = mmSocket.getOutputStream();
-						Log.d(TAG, "出力用オブジェクトを呼び出し");
-					} catch (IOException e) {
-						e.printStackTrace();
-						Log.d(TAG, "run: " + e);
-					}
-					try {
-						Log.d(TAG, "読み込み用オブジェクトを呼び出し中");
-						mInput = mmSocket.getInputStream();
-						Log.d(TAG, "読み込み用オブジェクトを呼び出し");
-					} catch (IOException e) {
-						e.printStackTrace();
-						Log.d(TAG, "run: " + e);
-					}
-
-
-				} catch (IOException connectException) {
-					// Unable to connect; close the socket and return.
-					try {
-						Log.d(TAG, "run: ソケット接続残念！" + connectException);
-						mmSocket.close();
-					} catch (IOException closeException) {
-						Log.e(TAG, "Could not close the client socket", closeException);
-					}
-					return;
-				}
-				Log.d(TAG, "認証できたよ");
-				status = 1;
-			} else {
-				Log.d(TAG, "認証できてるよ" + status);
-			}
-		}
-
-		//		BluetoothSocket mmSocket
-		private void send() {
-			//文字列を送信する
-			byte[] bytes;
-			String str = "Hello Server!!!";
-			bytes = str.getBytes();
-			try {
-				mOutput.write(bytes);
-				Log.d(TAG, "送信！");
-			} catch (IOException e) {
-				Log.d(TAG, "送信エラー:" + e);
-				e.printStackTrace();
-			}
 		}
 	}
 }

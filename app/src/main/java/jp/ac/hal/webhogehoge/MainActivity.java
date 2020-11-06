@@ -84,6 +84,28 @@ public class MainActivity extends AppCompatActivity {
 //		デモ用送信
 		CD.send();
 
+		Receiving();
+	}
+
+	//　初回表示、ポーズからの復帰時
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		requestBluetoothFeature();
+	}
+
+	//		Bluetooth機能の有効化を要求
+	private void requestBluetoothFeature() {
+		if (mBluetoothAdapter.isEnabled()) {
+			return;
+		}
+		// デバイスのBluetooth機能が有効になっていないときは、有効化要求（ダイアログ表示）
+		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
+	}
+
+	private void Receiving() {
 		Runnable looper = new Runnable() {
 			@Override
 			public void run() {
@@ -107,10 +129,9 @@ public class MainActivity extends AppCompatActivity {
 								Log.d(TAG, "input-stream読み込み1");
 								bytes = mInput.read(buffer);
 								Log.d(TAG, "input-stream読み込み2");
-								String msg = new String(buffer, 0, bytes);
-								Log.d(TAG, "manageMyConnectedSocket: " + msg);
-//								CD.mInput = null;
-//								Log.d(TAG, "nullにしたよ");
+								msg = new String(buffer, 0, bytes);
+								Log.d(TAG, "受信したメッセージ: " + msg);
+								inComingText(msg);
 							} catch (IOException e) {
 								e.printStackTrace();
 								Log.d(TAG, "読み込み失敗" + e);
@@ -128,24 +149,6 @@ public class MainActivity extends AppCompatActivity {
 		//スレッド起動
 		Thread thread = new Thread(looper);
 		thread.start();
-	}
-
-	//　初回表示、ポーズからの復帰時
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		requestBluetoothFeature();
-	}
-
-	//		Bluetooth機能の有効化を要求
-	private void requestBluetoothFeature() {
-		if (mBluetoothAdapter.isEnabled()) {
-			return;
-		}
-		// デバイスのBluetooth機能が有効になっていないときは、有効化要求（ダイアログ表示）
-		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
 	}
 
 	// 機能の有効化ダイアログの操作結果

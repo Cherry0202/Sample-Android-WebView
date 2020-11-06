@@ -205,8 +205,6 @@ public class MainActivity extends AppCompatActivity {
 
 	//	//	以下bluetooth関連
 	public class ConnectDevice {
-		private UUID MY_UUID;
-
 		private static final String Mac = "14:91:38:A0:80:27";
 		private static final String Device = "Fire Tablet1";
 
@@ -320,35 +318,6 @@ public class MainActivity extends AppCompatActivity {
 				Log.d(TAG, "送信エラー:" + e);
 				e.printStackTrace();
 			}
-		}
-
-		//			受信処理
-		private void read(InputStream mInput) {
-			while (true) {
-				if (mInput != null) {
-					Log.d(TAG, "受信待機中...");
-					// InputStreamのバッファを格納
-					byte[] buffer = new byte[1024];
-					// 取得したバッファのサイズを格納
-					int bytes;
-					// InputStreamの読み込み
-					try {
-						Log.d(TAG, "input-stream読み込み1");
-						bytes = mInput.read(buffer);
-						Log.d(TAG, "input-stream読み込み2");
-						String msg = new String(buffer, 0, bytes);
-						Log.d(TAG, "manageMyConnectedSocket: " + msg);
-						mInput = null;
-					} catch (IOException e) {
-						e.printStackTrace();
-						Log.d(TAG, "読み込み失敗" + e);
-						break;
-					}
-				} else {
-					break;
-				}
-			}
-
 		}
 	}
 }

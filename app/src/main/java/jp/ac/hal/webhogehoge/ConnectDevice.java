@@ -67,11 +67,11 @@ class ConnectDevice {
 			} catch (IOException e) {
 				Log.e(TAG, "Socket's create() method failed", e);
 			}
+
 			BluetoothSocket mmSocket = tmp;
 			Log.d(TAG, "socket準備完了");
 			MainActivity.mBluetoothAdapter.cancelDiscovery();
 			Log.d(TAG, "run: runだよ");
-
 
 			try {
 				// Connect to the remote device through the socket. This call blocks

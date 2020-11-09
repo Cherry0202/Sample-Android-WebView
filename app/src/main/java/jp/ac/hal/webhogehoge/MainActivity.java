@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
 	static OutputStream mOutput; //出力ストリーム
 	static InputStream mInput; //読み込みストリーム
 
-
 //	private ConnectDevice connectDevice;
 
 	WebView myWebView = null;
@@ -79,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 		myWebView.loadUrl("file:///android_asset/index2.html");
 //		myWebView.loadUrl("file:///android_asset/dist2/index.html");
 
+//		クリック時呼び出しになりそ
 		final ConnectDevice CD = new ConnectDevice();
 //		デモ用送信
 		CD.send();
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
 		requestBluetoothFeature();
 	}
 
@@ -116,32 +115,31 @@ public class MainActivity extends AppCompatActivity {
 						Log.e("looper", "InterruptedException");
 					}
 //繰り返し処理
-					while (true) {
-						Log.d(TAG, "受信待機中...");
-						if (mInput != null) {
-							// InputStreamのバッファを格納
-							byte[] buffer = new byte[1024];
-							// 取得したバッファのサイズを格納
-							int bytes;
-							// InputStreamの読み込み
-							try {
-								Log.d(TAG, "input-stream読み込み1");
-								bytes = mInput.read(buffer);
-								Log.d(TAG, "input-stream読み込み2");
-								msg = new String(buffer, 0, bytes);
-								Log.d(TAG, "受信したメッセージ: " + msg);
-								inComingText(msg);
-							} catch (IOException e) {
-								e.printStackTrace();
-								Log.d(TAG, "読み込み失敗" + e);
-								break;
-							}
-						} else {
-							Log.d(TAG, "送られてないよ！");
+					Log.d(TAG, "受信待機中...");
+					if (mInput != null) {
+						// InputStreamのバッファを格納
+						byte[] buffer = new byte[1024];
+						// 取得したバッファのサイズを格納
+						int bytes;
+						// InputStreamの読み込み
+						try {
+							Log.d(TAG, "input-stream読み込み1");
+							bytes = mInput.read(buffer);
+							Log.d(TAG, "input-stream読み込み2");
+							msg = new String(buffer, 0, bytes);
+							Log.d(TAG, "受信したメッセージ: " + msg);
+							inComingText(msg);
+						} catch (IOException e) {
+							e.printStackTrace();
+							Log.d(TAG, "読み込み失敗" + e);
 							break;
 						}
+					} else {
+						Log.d(TAG, "送られてないよ！");
+						break;
 					}
 				}
+
 			}
 		};
 
@@ -174,10 +172,9 @@ public class MainActivity extends AppCompatActivity {
 		send2(mOutput);
 	}
 
-
 	//	jsのfunction呼び出し
 	public void inComingText(final String msgText) {
-		Log.d(TAG, "incommingText: " + msgText);
+		Log.d(TAG, "incomingText: " + msgText);
 		mHandler.post(new Runnable() {
 			@Override
 			public void run() {

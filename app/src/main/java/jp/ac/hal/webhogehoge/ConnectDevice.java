@@ -13,6 +13,7 @@ class ConnectDevice {
 	private static final String Mac = "14:91:38:A0:80:27";
 	private static final String Device = "Fire Tablet1";
 	private static final String TAG = "debug";
+	private static final String TAG2 = "device";
 	private static int status = 0;
 
 	//	ペアリングしているデバイスがあるか
@@ -35,7 +36,6 @@ class ConnectDevice {
 			}
 		} else {
 			Log.d(TAG, "pairing device is not found");
-//			finish();
 		}
 		return null;
 	}

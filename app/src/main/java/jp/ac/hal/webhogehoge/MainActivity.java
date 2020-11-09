@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 		myWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
 
 		myWebView.loadUrl("file:///android_asset/index2.html");
+//		myWebView.loadUrl("file:///android_asset/dist2/index.html");
 
 		final ConnectDevice CD = new ConnectDevice();
 //		デモ用送信

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bluetooth Sample</string>
+    <string name="app_name">Client側</string>
 
     <!-- MainActivity トースト用 -->
     <string name="bluetooth_is_not_supported">Bluetooth is not supported.</string>

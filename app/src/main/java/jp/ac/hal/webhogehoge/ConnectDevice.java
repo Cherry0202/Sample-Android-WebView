@@ -10,6 +10,7 @@ import java.util.UUID;
 
 //	//	以下bluetooth関連
 class ConnectDevice {
+	//	TODO ここの定数変更
 	private static final String Mac = "14:91:38:A0:80:27";
 	private static final String Device = "Fire Tablet1";
 	private static final String TAG = "debug";
@@ -23,9 +24,9 @@ class ConnectDevice {
 		if (pairedDevices.size() > 0) {
 			// There are paired devices. Get the name and address of each paired device.
 			for (BluetoothDevice device : pairedDevices) {
-				Log.d(TAG, "device name: " + device.getName());
+				Log.d(TAG2, "device name: " + device.getName());
 				String deviceName = device.getName();
-				Log.d(TAG, "mac address:" + device.getAddress());
+				Log.d(TAG2, "mac address:" + device.getAddress());
 				if (device.getAddress().equals(Mac) && deviceName.equals(Device)) {
 //					TODO Occulusのdeviceのだった時
 					status = 1;
@@ -101,7 +102,7 @@ class ConnectDevice {
 					Log.d(TAG, "run: ソケット接続残念！" + connectException);
 					mmSocket.close();
 				} catch (IOException closeException) {
-					Log.e(TAG, "Could not close the client socket", closeException);
+					Log.d(TAG, "Could not close the client socket", closeException);
 				}
 				return;
 			}

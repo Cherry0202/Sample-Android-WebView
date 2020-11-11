@@ -1,19 +1,15 @@
 package jp.ac.hal.webhogehoge;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,10 +33,11 @@ public class MainActivity extends AppCompatActivity {
 	// メンバー変数
 	//BTの設定
 	public static BluetoothAdapter mBluetoothAdapter; //BTアダプタ
-	public static BluetoothDevice mBtDevice; //BTデバイス
+	//	public static BluetoothDevice bluetoothDevice; //BTデバイス
 	private BluetoothSocket mBtSocket; //BTソケット
 	static OutputStream mOutput; //出力ストリーム
 	static InputStream mInput; //読み込みストリーム
+	private BluetoothManager bluetoothManager;
 
 //	private ConnectDevice connectDevice;
 
@@ -52,17 +49,21 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+//		//端末がBluetoothに対応しているか
+//		if (BluetoothAdapter.getDefaultAdapter() == null) {
+//			Toast.makeText(this, "The device does not support Bluetooth.", Toast.LENGTH_SHORT).show();
+//			finish();
+//		}
+
 
 //      Bluetoothアダプタ取得
-		BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-		mBluetoothAdapter = bluetoothManager.getAdapter();
-
-
-		//端末がBluetoothに対応しているか
-		if (BluetoothAdapter.getDefaultAdapter() == null) {
-			Toast.makeText(this, "The device does not support Bluetooth.", Toast.LENGTH_SHORT).show();
-			finish();
+		ConnectDevice CD = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
+		try {
+			CD.connect();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		CD.start();
 
 
 //		以下 WebView関連
@@ -78,30 +79,24 @@ public class MainActivity extends AppCompatActivity {
 		myWebView.loadUrl("file:///android_asset/index2.html");
 //		myWebView.loadUrl("file:///android_asset/dist2/index.html");
 
-//		クリック時呼び出しになりそ
-		final ConnectDevice CD = new ConnectDevice();
-//		デモ用送信
-		CD.send();
-
-		Receiving();
 	}
 
 	//　初回表示、ポーズからの復帰時
 	@Override
 	protected void onResume() {
 		super.onResume();
-		requestBluetoothFeature();
+//		requestBluetoothFeature();
 	}
 
-	//		Bluetooth機能の有効化を要求
-	private void requestBluetoothFeature() {
-		if (mBluetoothAdapter.isEnabled()) {
-			return;
-		}
-		// デバイスのBluetooth機能が有効になっていないときは、有効化要求（ダイアログ表示）
-		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
-	}
+//	//		Bluetooth機能の有効化を要求
+//	private void requestBluetoothFeature() {
+//		if (mBluetoothAdapter.isEnabled()) {
+//			return;
+//		}
+//		// デバイスのBluetooth機能が有効になっていないときは、有効化要求（ダイアログ表示）
+//		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//		startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
+//	}
 
 	private void Receiving() {
 		Runnable looper = new Runnable() {
@@ -149,17 +144,17 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	// 機能の有効化ダイアログの操作結果
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_ENABLE_BLUETOOTH) { // Bluetooth有効化要求
-			if (Activity.RESULT_CANCELED == resultCode) {    // 有効にされなかった
-				Toast.makeText(this, R.string.bluetooth_is_not_working, Toast.LENGTH_SHORT).show();
-				finish();    // アプリ終了宣言
-				return;
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
+//	@Override
+//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		if (requestCode == REQUEST_ENABLE_BLUETOOTH) { // Bluetooth有効化要求
+//			if (Activity.RESULT_CANCELED == resultCode) {    // 有効にされなかった
+//				Toast.makeText(this, R.string.bluetooth_is_not_working, Toast.LENGTH_SHORT).show();
+//				finish();    // アプリ終了宣言
+//				return;
+//			}
+//		}
+//		super.onActivityResult(requestCode, resultCode, data);
+//	}
 
 	public static String sampleText() {
 		Log.d(TAG, "呼び出されたよ！！");

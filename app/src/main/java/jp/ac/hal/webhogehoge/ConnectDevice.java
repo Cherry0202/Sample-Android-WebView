@@ -74,7 +74,7 @@ class ConnectDevice extends Thread {
 		}
 	}
 
-	//	TODO デバイス接続タイミングが明瞭になってから
+	//	TODO デバイス接続タイミングが明瞭になってから変更予定
 	//	ペアリングしているデバイスがあるか
 	private String findDevice() {
 		Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();

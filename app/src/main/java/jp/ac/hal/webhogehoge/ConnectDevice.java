@@ -19,22 +19,36 @@ class ConnectDevice extends Thread {
 	private static final String TAG2 = "device";
 	private static final String BT_UUID = "fea4154d-4184-46b4-98a5-7896af703591";
 	private final BluetoothAdapter bluetoothAdapter; //BTアダプタ
+	private final BluetoothManager bluetoothManager;
 	private BluetoothDevice bluetoothDevice;
 	private BluetoothSocket bluetoothSocket;
+	private String macAddress;
+	private OutputStream outputStream;
+	private boolean running = true;
 
 	ConnectDevice(BluetoothManager bluetoothManager) {
+		this.bluetoothManager = bluetoothManager;
 		this.bluetoothAdapter = bluetoothManager.getAdapter();
 	}
 
 	public void run() {
-		bluetoothAdapter.cancelDiscovery();
-		try {
-			bluetoothSocket.connect();
-		} catch (IOException e) {
+//		とりま
+//		this.bluetoothSocket = returnSocket();
+//		サブスレッドの終了条件、isConnectedでもよさそ
+		if (!this.bluetoothSocket.isConnected()) {
+			Log.d(TAG, String.valueOf("runだよ: " + this.bluetoothSocket.isConnected()));
+			this.bluetoothAdapter.cancelDiscovery();
 			try {
-				bluetoothSocket.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
+				this.bluetoothSocket.connect();
+				Log.d(TAG, String.valueOf("run-connected: " + this.bluetoothSocket.isConnected()));
+				//				ここのタイミングはOK
+			} catch (IOException e) {
+				try {
+					Log.d(TAG, "close()呼び出されたよ...");
+					this.bluetoothSocket.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
@@ -42,35 +56,32 @@ class ConnectDevice extends Thread {
 	void connect() throws IOException {
 		try {
 //			TODO frontとのやりとり追加　暫定
-			String macAddress = findDevice();
-			bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
-			bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
+			this.macAddress = findDevice();
+			this.bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
+			this.bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
 		} catch (Exception e) {
 			throw e;
 		}
-
-//		bluetoothSocket.isConnected()あとで使いそ
-
-//		非同期処理
-		bluetoothSocket.getInputStream();
-		bluetoothSocket.getOutputStream();
-//		デモ用
 	}
 
-	private void send(BluetoothSocket bluetoothSocket, String str) throws IOException {
-		OutputStream outputStream;
-		if (bluetoothSocket != null) {
-			outputStream = bluetoothSocket.getOutputStream();
-		} else {
-			return;
+	private BluetoothSocket returnSocket() {
+		return this.bluetoothSocket;
+	}
+
+	void send(String str) throws IOException, InterruptedException {
+		if (!this.bluetoothSocket.isConnected()) {
+			sleep(1100);
 		}
+		BluetoothSocket btSocket = returnSocket();
+		outputStream = btSocket.getOutputStream();
 		//文字列を送信する
 		byte[] bytes;
 		bytes = str.getBytes();
 		try {
 			outputStream.write(bytes);
+			Log.d(TAG, "送信なう");
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw e;
 		}
 	}
 

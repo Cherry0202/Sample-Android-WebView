@@ -5,9 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -15,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,14 +39,11 @@ public class MainActivity extends AppCompatActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		Log.d("hoge", String.valueOf(deviceArray));
 //		以下 WebView関連
 
 		// WebView呼び出し
 		myWebView = findViewById(R.id.webView);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			WebView.setWebContentsDebuggingEnabled(true);
-		}
+		WebView.setWebContentsDebuggingEnabled(true);
 		myWebView.setWebViewClient(new WebViewClient());
 //        WebView内でのjsを許可
 		myWebView.getSettings().setJavaScriptEnabled(true);
@@ -69,11 +62,6 @@ public class MainActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 //		requestBluetoothFeature();
-	}
-
-	//	jsのfunction呼び出し
-	public void inComingText(final HashMap sampleMap, WebView myWebView) {
-		Log.d("debug", "incomingText呼び出し");
 	}
 
 	//		//端末がBluetoothに対応しているか

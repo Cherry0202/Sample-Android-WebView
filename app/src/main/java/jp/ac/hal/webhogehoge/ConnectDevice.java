@@ -10,6 +10,7 @@ import android.webkit.JavascriptInterface;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ class ConnectDevice extends Thread {
 	private static final String TAG = "debug";
 	private static final String TAG2 = "device";
 	private static final String BT_UUID = "fea4154d-4184-46b4-98a5-7896af703591";
-	private final BluetoothAdapter bluetoothAdapter; //BTアダプタ
+	private BluetoothAdapter bluetoothAdapter; //BTアダプタ
 	private final BluetoothManager bluetoothManager;
 	private BluetoothDevice bluetoothDevice;
 	private BluetoothSocket bluetoothSocket;
@@ -91,6 +92,21 @@ class ConnectDevice extends Thread {
 			}
 		} else {
 			Log.d(TAG, "pairing device is not found");
+		}
+		return null;
+	}
+
+	HashMap<String, String> returnDeviceArray() {
+		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
+		HashMap<String, String> hashmap = new HashMap<String, String>();//[1]
+		if (pairedDevices.size() > 0) {
+			for (BluetoothDevice device : pairedDevices) {
+				Log.d(TAG2, "device name: " + device.getName());
+				String deviceName = device.getName();
+				Log.d(TAG2, "mac address:" + device.getAddress());
+				hashmap.put(device.getName(), device.getAddress());//[4]
+			}
+			return hashmap;
 		}
 		return null;
 	}

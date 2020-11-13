@@ -5,12 +5,16 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,18 +36,22 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		ConnectDevice connectDevice = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
-
+		HashMap sampleMap = connectDevice.returnDeviceArray();
 //		以下 WebView関連
 
 		// WebView呼び出し
 		myWebView = findViewById(R.id.webView);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			WebView.setWebContentsDebuggingEnabled(true);
+		}
 		myWebView.setWebViewClient(new WebViewClient());
 //        WebView内でのjsを許可
 		myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
 		myWebView.addJavascriptInterface(new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)), "Android");
-
 		myWebView.loadUrl("file:///android_asset/index2.html");
+		myWebView.loadUrl("javascript:inComingText('表示されます');");
+//		inComingText(sampleMap, myWebView);
 	}
 
 	//　初回表示、ポーズからの復帰時
@@ -54,13 +62,8 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	//	jsのfunction呼び出し
-	public void inComingText(final String msgText) {
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				myWebView.loadUrl("javascript:inComingText('" + msgText + "')");
-			}
-		});
+	public void inComingText(final HashMap sampleMap, WebView myWebView) {
+		Log.d("debug", "incomingText呼び出し");
 	}
 
 	//		//端末がBluetoothに対応しているか

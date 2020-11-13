@@ -8,7 +8,6 @@ import android.webkit.JavascriptInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Set;
@@ -63,15 +62,19 @@ class ConnectDevice extends Thread {
 
 	JSONArray returnDeviceArray() throws JSONException {
 		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
-		JSONArray deviceList = new JSONArray();
+//		JSONArray deviceList = new JSONArray();
+		JsonCreator jsonCreator = new JsonCreator();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
-				JSONObject deviceInfo = new JSONObject();
-				deviceInfo.put("device-name", device.getName());
-				deviceInfo.put("mac-address", device.getAddress());
-				deviceList.put(deviceInfo);
+//				JSONObject deviceInfo = new JSONObject();
+//				deviceInfo.put("device-name", device.getName());
+//				deviceInfo.put("mac-address", device.getAddress());
+//				deviceList.put(deviceInfo);
+				jsonCreator.objectPutter("device-name", device.getName());
+				jsonCreator.objectPutter("mac-address", device.getAddress());
+				jsonCreator.arrayPutter(jsonCreator.returnJsonObject());
 			}
-			return deviceList;
+			return jsonCreator.returnJsonArray();
 		}
 		return null;
 	}

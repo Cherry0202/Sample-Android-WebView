@@ -23,7 +23,6 @@ class MessageWriter {
 	public void sendMessage(String str) throws IOException {
 		Log.d(TAG, str);
 		if (!this.bluetoothSocket.isConnected()) {
-			Log.d(TAG, "コネクト中");
 			sleep(2000);
 		}
 		this.outputStream = this.bluetoothSocket.getOutputStream();
@@ -32,7 +31,6 @@ class MessageWriter {
 		bytes = str.getBytes();
 		try {
 			this.outputStream.write(bytes);
-			Log.d(TAG, "送信");
 		} catch (IOException e) {
 			throw e;
 		}

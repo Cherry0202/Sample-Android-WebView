@@ -6,8 +6,6 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -20,34 +18,20 @@ public class MainActivity extends AppCompatActivity {
 
 	//    定数
 // Bluetooth機能の有効化要求時の識別コード
-	private static final int REQUEST_ENABLE_BLUETOOTH = 1;
-	private static final String TAG = "debug";
-	private boolean isRepeat = true;
-	//繰り返し間隔（ミリ秒）
-	private final int REPEAT_INTERVAL = 1000;
-	//	private static int status = 0;
-	private String msg = "初期値";
-	private Handler mHandler = new Handler();
-
 	// メンバー変数
 	//BTの設定
-	public static BluetoothAdapter mBluetoothAdapter; //BTアダプタ
-	//	public static BluetoothDevice bluetoothDevice; //BTデバイス
-	private BluetoothSocket mBtSocket; //BTソケット
-	static OutputStream mOutput; //出力ストリーム
-	private BluetoothManager bluetoothManager;
-
-//	private ConnectDevice connectDevice;
+	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
+	public BluetoothSocket btSocket; //BTソケット
+	private OutputStream mOutput; //出力ストリーム
 
 	WebView myWebView = null;
 
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-//      Bluetoothアダプタ取得
 		ConnectDevice connectDevice = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
 		try {
 			connectDevice.connect();
@@ -55,15 +39,7 @@ public class MainActivity extends AppCompatActivity {
 			e.printStackTrace();
 		}
 		connectDevice.start();
-		BluetoothSocket btSocket = connectDevice.returnSocket();
-		MessageWriter messageWriter = new MessageWriter(btSocket);
-
-//		test
-		try {
-			messageWriter.sendMessage("foofooofooo");
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
+		this.btSocket = connectDevice.returnSocket();
 
 //		以下 WebView関連
 
@@ -73,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 //        WebView内でのjsを許可
 		myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
-		myWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
+		myWebView.addJavascriptInterface(new MessageWriter(this.btSocket), "Android");
 
 		myWebView.loadUrl("file:///android_asset/index2.html");
 //		myWebView.loadUrl("file:///android_asset/dist2/index.html");
@@ -116,42 +92,4 @@ public class MainActivity extends AppCompatActivity {
 //		}
 //		super.onActivityResult(requestCode, resultCode, data);
 //	}
-
-	public static String sampleText() {
-		Log.d(TAG, "呼び出されたよ！！");
-		String javaText;
-		return javaText = "sampleText";
-	}
-
-	public void sampleSend() {
-		Log.d(TAG, "sampleSend");
-//		send2(mBtSocket);
-	}
-
-	//	jsのfunction呼び出し
-	public void inComingText(final String msgText) {
-		Log.d(TAG, "incomingText: " + msgText);
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				myWebView.loadUrl("javascript:inComingText('" + msgText + "')");
-			}
-		});
-	}
-
-	private void send2(BluetoothSocket mBtSocket) throws IOException {
-		Log.d(TAG, "send2");
-		//文字列を送信する
-		byte[] bytes;
-		String str = "Hello Server2!";
-		bytes = str.getBytes();
-		mOutput = mBtSocket.getOutputStream();
-		try {
-			mOutput.write(bytes);
-			Log.d(TAG, "送信！");
-		} catch (IOException e) {
-			Log.d(TAG, "送信エラー:" + e);
-			e.printStackTrace();
-		}
-	}
 }

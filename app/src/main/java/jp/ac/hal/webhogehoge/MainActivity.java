@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 	//BTの設定
 	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
 	public BluetoothSocket btSocket; //BTソケット
-	private Handler mHandler = new Handler();
 	private JSONArray deviceArray;
 
 

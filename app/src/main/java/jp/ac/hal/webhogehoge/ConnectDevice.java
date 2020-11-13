@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -49,7 +50,8 @@ class ConnectDevice extends Thread {
 		}
 	}
 
-	void connect() throws IOException {
+	@JavascriptInterface
+	public void connect(String str) throws IOException {
 		try {
 //			TODO frontとのやりとり追加　暫定コード
 			this.macAddress = findDevice();
@@ -58,6 +60,10 @@ class ConnectDevice extends Thread {
 		} catch (Exception e) {
 			throw e;
 		}
+		this.start();
+		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = returnSocket());
+		messageWriter.sendMessage(str);
+		this.bluetoothSocket.close();
 	}
 
 	BluetoothSocket returnSocket() {
@@ -72,7 +78,6 @@ class ConnectDevice extends Thread {
 
 		Log.d(TAG2, Arrays.toString(pairedDevices.toArray()));
 		if (pairedDevices.size() > 0) {
-			// There are paired devices. Get the name and address of each paired device.
 			for (BluetoothDevice device : pairedDevices) {
 				Log.d(TAG2, "device name: " + device.getName());
 				String deviceName = device.getName();
@@ -90,3 +95,5 @@ class ConnectDevice extends Thread {
 		return null;
 	}
 }
+
+//　TODO socket close 送信後

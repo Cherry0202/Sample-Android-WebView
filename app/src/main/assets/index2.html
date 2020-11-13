@@ -4,15 +4,27 @@
     <title>タイトル</title>
 </head>
 <body>
+<input type="button" value="Sample Connect" onClick="connectAndroid()"/>
+<div id="sample1">
+    確認！！
+</div>
 <input type="button" value="Sample Send" onClick="sendAndroidText()"/>
 <div id="sample2">
-    hoge2
+    送信！！
+</div>
+<div id="sample3">
 </div>
 
 <script type="text/javascript">
-        function sendAndroidText() {
-           const element2 = document.getElementById('sample2')
-           element2.innerHTML = '<h1>'+'Send'+'</h1>'
+        function connectAndroid() {
+           const element1 = document.getElementById('sample1')
+           element1.innerHTML = '<h1>'+'Connect!'+'</h1>'
+           Android.connect("foofooofoofoofoo");
+        }
+
+        function inComingText(msg) {
+           const element3 = document.getElementById('sample3')
+           element3.innerHTML = '<h1>'+msg+'</h1>'
            Android.sendMessage("hogehogehoge");
         }
 

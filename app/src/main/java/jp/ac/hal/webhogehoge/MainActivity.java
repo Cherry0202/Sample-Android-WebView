@@ -6,13 +6,11 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
 	//BTの設定
 	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
 	public BluetoothSocket btSocket; //BTソケット
-	private OutputStream mOutput; //出力ストリーム
+	private Handler mHandler = new Handler();
+
 
 	WebView myWebView = null;
 
@@ -33,13 +32,6 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		ConnectDevice connectDevice = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
-		try {
-			connectDevice.connect();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		connectDevice.start();
-		this.btSocket = connectDevice.returnSocket();
 
 //		以下 WebView関連
 
@@ -49,11 +41,9 @@ public class MainActivity extends AppCompatActivity {
 //        WebView内でのjsを許可
 		myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
-		myWebView.addJavascriptInterface(new MessageWriter(this.btSocket), "Android");
+		myWebView.addJavascriptInterface(new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)), "Android");
 
 		myWebView.loadUrl("file:///android_asset/index2.html");
-//		myWebView.loadUrl("file:///android_asset/dist2/index.html");
-
 	}
 
 	//　初回表示、ポーズからの復帰時
@@ -61,6 +51,16 @@ public class MainActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 //		requestBluetoothFeature();
+	}
+
+	//	jsのfunction呼び出し
+	public void inComingText(final String msgText) {
+		mHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				myWebView.loadUrl("javascript:inComingText('" + msgText + "')");
+			}
+		});
 	}
 
 	//		//端末がBluetoothに対応しているか

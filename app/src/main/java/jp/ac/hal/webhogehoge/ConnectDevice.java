@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,16 +33,12 @@ class ConnectDevice extends Thread {
 	}
 
 	public void run() {
-//		とりま
-//		this.bluetoothSocket = returnSocket();
-//		サブスレッドの終了条件、isConnectedでもよさそ
 		if (!this.bluetoothSocket.isConnected()) {
 			Log.d(TAG, String.valueOf("runだよ: " + this.bluetoothSocket.isConnected()));
 			this.bluetoothAdapter.cancelDiscovery();
 			try {
 				this.bluetoothSocket.connect();
 				Log.d(TAG, String.valueOf("run-connected: " + this.bluetoothSocket.isConnected()));
-				//				ここのタイミングはOK
 			} catch (IOException e) {
 				try {
 					Log.d(TAG, "close()呼び出されたよ...");
@@ -55,7 +52,7 @@ class ConnectDevice extends Thread {
 
 	void connect() throws IOException {
 		try {
-//			TODO frontとのやりとり追加　暫定
+//			TODO frontとのやりとり追加　暫定コード
 			this.macAddress = findDevice();
 			this.bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
 			this.bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
@@ -64,13 +61,15 @@ class ConnectDevice extends Thread {
 		}
 	}
 
-	private BluetoothSocket returnSocket() {
+	BluetoothSocket returnSocket() {
 		return this.bluetoothSocket;
 	}
 
+	//	別クラスで書こう！
 	void send(String str) throws IOException, InterruptedException {
 		if (!this.bluetoothSocket.isConnected()) {
-			sleep(1100);
+			Log.d(TAG, "コネクト中");
+			sleep(2000);
 		}
 		BluetoothSocket btSocket = returnSocket();
 		outputStream = btSocket.getOutputStream();
@@ -79,7 +78,7 @@ class ConnectDevice extends Thread {
 		bytes = str.getBytes();
 		try {
 			outputStream.write(bytes);
-			Log.d(TAG, "送信なう");
+			Log.d(TAG, "送信");
 		} catch (IOException e) {
 			throw e;
 		}
@@ -88,8 +87,10 @@ class ConnectDevice extends Thread {
 	//	TODO デバイス接続タイミングが明瞭になってから変更予定
 	//	ペアリングしているデバイスがあるか
 	private String findDevice() {
-		Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+//		この配列渡せばよさそ
+		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
 
+		Log.d(TAG2, Arrays.toString(pairedDevices.toArray()));
 		if (pairedDevices.size() > 0) {
 			// There are paired devices. Get the name and address of each paired device.
 			for (BluetoothDevice device : pairedDevices) {

@@ -5,6 +5,8 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class WebAppInterface {
 	private Context mContext;
 
@@ -31,7 +33,7 @@ public class WebAppInterface {
 	}
 
 	@JavascriptInterface
-	public void sendSampleText() {
+	public void sendSampleText() throws IOException, InterruptedException {
 		Log.d("debug", "send sample text 呼び出しできたよ");
 		MainActivity mainActivity = new MainActivity();
 		mainActivity.sampleSend();

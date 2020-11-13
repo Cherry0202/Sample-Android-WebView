@@ -7,10 +7,13 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
@@ -96,17 +99,17 @@ class ConnectDevice extends Thread {
 		return null;
 	}
 
-	HashMap<String, String> returnDeviceArray() {
+	JSONArray returnDeviceArray() throws JSONException {
 		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
-		HashMap<String, String> hashmap = new HashMap<String, String>();//[1]
+		JSONArray deviceList = new JSONArray();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
-				Log.d(TAG2, "device name: " + device.getName());
-				String deviceName = device.getName();
-				Log.d(TAG2, "mac address:" + device.getAddress());
-				hashmap.put(device.getName(), device.getAddress());//[4]
+				JSONObject deviceInfo = new JSONObject();
+				deviceInfo.put("DeviceName", device.getName());
+				deviceInfo.put("MacAddress", device.getAddress());
+				deviceList.put(deviceInfo);
 			}
-			return hashmap;
+			return deviceList;
 		}
 		return null;
 	}

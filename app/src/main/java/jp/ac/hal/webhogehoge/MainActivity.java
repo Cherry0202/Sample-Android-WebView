@@ -14,6 +14,9 @@ import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
 	public BluetoothSocket btSocket; //BTソケット
 	private Handler mHandler = new Handler();
+	private JSONArray deviceArray;
 
 
 	WebView myWebView = null;
@@ -36,8 +40,12 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		ConnectDevice connectDevice = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
-		final HashMap sampleMap = connectDevice.returnDeviceArray();
-		Log.d("hoge", String.valueOf(sampleMap));
+		try {
+			this.deviceArray = connectDevice.returnDeviceArray();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Log.d("hoge", String.valueOf(deviceArray));
 //		以下 WebView関連
 
 		// WebView呼び出し
@@ -53,10 +61,9 @@ public class MainActivity extends AppCompatActivity {
 		myWebView.loadUrl("file:///android_asset/index2.html");
 		myWebView.setWebViewClient(new WebViewClient() {
 			public void onPageFinished(WebView view, String weburl) {
-				myWebView.loadUrl("javascript:testEcho('" + sampleMap + "')");
+				myWebView.loadUrl("javascript:testEcho('" + deviceArray.toString() + "')");
 			}
 		});
-//		inComingText(sampleMap, myWebView);
 	}
 
 	//　初回表示、ポーズからの復帰時

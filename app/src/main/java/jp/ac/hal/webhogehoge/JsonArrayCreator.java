@@ -4,17 +4,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class JsonCreator {
+class JsonArrayCreator {
 	private JSONObject jsonObject;
 	private JSONArray jsonArray;
 
-	JsonCreator() {
-		this.jsonObject = new JSONObject();
+	JsonArrayCreator() {
 		this.jsonArray = new JSONArray();
 	}
 
+	private void jsonCreator() {
+		this.jsonObject = new JSONObject();
+	}
+
 	void objectPutter(String key, String value) throws JSONException {
-		this.jsonObject.put(key, value);
+		jsonObject.put(key, value);
 	}
 
 	void arrayPutter(JSONObject jsonObject) {
@@ -22,6 +25,7 @@ class JsonCreator {
 	}
 
 	JSONObject returnJsonObject() {
+		jsonCreator();
 		return this.jsonObject;
 	}
 

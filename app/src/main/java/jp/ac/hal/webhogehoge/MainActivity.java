@@ -14,7 +14,6 @@ import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
 	//	public static BluetoothDevice bluetoothDevice; //BTデバイス
 	private BluetoothSocket mBtSocket; //BTソケット
 	static OutputStream mOutput; //出力ストリーム
-	static InputStream mInput; //読み込みストリーム
 	private BluetoothManager bluetoothManager;
 
 //	private ConnectDevice connectDevice;
@@ -57,13 +55,15 @@ public class MainActivity extends AppCompatActivity {
 			e.printStackTrace();
 		}
 		connectDevice.start();
-//		sample
+		BluetoothSocket btSocket = connectDevice.returnSocket();
+		MessageWriter messageWriter = new MessageWriter(btSocket);
+
+//		test
 		try {
-			connectDevice.send("hogefugaheeeee");
+			messageWriter.sendMessage("foofooofooo");
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
-
 
 //		以下 WebView関連
 

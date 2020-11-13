@@ -64,24 +64,6 @@ class ConnectDevice extends Thread {
 		return this.bluetoothSocket;
 	}
 
-	//	別クラスで書こう！
-	void send(String str) throws IOException, InterruptedException {
-		if (!this.bluetoothSocket.isConnected()) {
-			Log.d(TAG, "コネクト中");
-			sleep(2000);
-		}
-		BluetoothSocket btSocket = returnSocket();
-		outputStream = btSocket.getOutputStream();
-		//文字列を送信する
-		byte[] bytes;
-		bytes = str.getBytes();
-		try {
-			outputStream.write(bytes);
-			Log.d(TAG, "送信");
-		} catch (IOException e) {
-			throw e;
-		}
-	}
 
 	//	TODO デバイス接続タイミングが明瞭になってから変更予定
 	//	ペアリングしているデバイスがあるか

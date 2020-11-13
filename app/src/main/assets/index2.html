@@ -4,33 +4,19 @@
     <title>タイトル</title>
 </head>
 <body>
-<input type="button" value="Say hello" onClick="showAndroidToast('Hello Android!')"/>
-<div id="sample">
-    hogehoge
-</div>
 <input type="button" value="Sample Send" onClick="sendAndroidText()"/>
 <div id="sample2">
     hoge2
 </div>
-<div id="sample3">
-</div>
 
 <script type="text/javascript">
-        function showAndroidToast(toast) {
-           hoge = Android.showToast(toast);
-           const element = document.getElementById('sample')
-           element.innerHTML = '<h1>'+hoge+'</h1>'
-           console.log(hoge);
-        }
         function sendAndroidText() {
            const element2 = document.getElementById('sample2')
            element2.innerHTML = '<h1>'+'Send'+'</h1>'
-           Android.sendSampleText();
+           Android.sendMessage("hogehogehoge");
         }
-        function inComingText(msg) {
-           const element3 = document.getElementById('sample3')
-           element3.innerHTML = '<h1>'+msg+'</h1>'
-        }
+
+
 
 </script>
 

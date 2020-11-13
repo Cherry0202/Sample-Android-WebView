@@ -2,13 +2,14 @@ package jp.ac.hal.webhogehoge;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static java.lang.Thread.sleep;
+import static android.os.SystemClock.sleep;
 
-public class MessageWriter {
+class MessageWriter {
 	private static final String TAG = "debug";
 	private BluetoothSocket bluetoothSocket;
 	private OutputStream outputStream;
@@ -17,8 +18,10 @@ public class MessageWriter {
 		this.bluetoothSocket = bluetoothSocket;
 	}
 
-	//	別クラスで書こう！
-	void sendMessage(String str) throws IOException, InterruptedException {
+
+	@JavascriptInterface
+	public void sendMessage(String str) throws IOException {
+		Log.d(TAG, str);
 		if (!this.bluetoothSocket.isConnected()) {
 			Log.d(TAG, "コネクト中");
 			sleep(2000);

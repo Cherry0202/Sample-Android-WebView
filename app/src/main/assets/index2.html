@@ -13,7 +13,7 @@
     送信！！
 </div>
 <div id="sample3">
-    hoge
+    <!--    hoge-->
 </div>
 
 <script type="text/javascript">
@@ -22,17 +22,11 @@
            element1.innerHTML = '<h1>'+'Connect!'+'</h1>'
            Android.connect("foofooofoofoofoo");
         }
-        function inComingText(sampleMap) {
-           console.log(sampleMap)
-           const element2 = document.getElementById('sample3')
-           element2.innerHTML = '<h1>'+"hoge"+'</h1>'
+        function testEcho(msg) {
+           console.log(msg)
+           const element = document.getElementById('sample3')
+           element.innerHTML = '<h1>'+msg+'</h1>'
         }
-
-
-
-
-
-
 
 </script>
 

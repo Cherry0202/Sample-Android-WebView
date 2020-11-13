@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		ConnectDevice connectDevice = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
-		HashMap sampleMap = connectDevice.returnDeviceArray();
+		final HashMap sampleMap = connectDevice.returnDeviceArray();
+		Log.d("hoge", String.valueOf(sampleMap));
 //		以下 WebView関連
 
 		// WebView呼び出し
@@ -50,7 +51,11 @@ public class MainActivity extends AppCompatActivity {
 //       webAppInterfaceを使う
 		myWebView.addJavascriptInterface(new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)), "Android");
 		myWebView.loadUrl("file:///android_asset/index2.html");
-		myWebView.loadUrl("javascript:inComingText('表示されます');");
+		myWebView.setWebViewClient(new WebViewClient() {
+			public void onPageFinished(WebView view, String weburl) {
+				myWebView.loadUrl("javascript:testEcho('" + sampleMap + "')");
+			}
+		});
 //		inComingText(sampleMap, myWebView);
 	}
 

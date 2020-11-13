@@ -49,28 +49,20 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-//		//端末がBluetoothに対応しているか
-//		if (BluetoothAdapter.getDefaultAdapter() == null) {
-//			Toast.makeText(this, "The device does not support Bluetooth.", Toast.LENGTH_SHORT).show();
-//			finish();
-//		}
-
-
 //      Bluetoothアダプタ取得
-		ConnectDevice CD = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
+		ConnectDevice connectDevice = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
 		try {
-			CD.connect();
+			connectDevice.connect();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		CD.start();
+		connectDevice.start();
+//		sample
 		try {
-			CD.send();
+			connectDevice.send("hogefugaheeeee");
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
-
-
 //		以下 WebView関連
 
 		// WebView呼び出し
@@ -93,7 +85,14 @@ public class MainActivity extends AppCompatActivity {
 //		requestBluetoothFeature();
 	}
 
-//	//		Bluetooth機能の有効化を要求
+	//		//端末がBluetoothに対応しているか
+//		if (BluetoothAdapter.getDefaultAdapter() == null) {
+//			Toast.makeText(this, "The device does not support Bluetooth.", Toast.LENGTH_SHORT).show();
+//			finish();
+//		}
+
+
+	//	//		Bluetooth機能の有効化を要求
 //	private void requestBluetoothFeature() {
 //		if (mBluetoothAdapter.isEnabled()) {
 //			return;
@@ -102,51 +101,6 @@ public class MainActivity extends AppCompatActivity {
 //		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 //		startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
 //	}
-
-	private void Receiving() {
-		Runnable looper = new Runnable() {
-			@Override
-			public void run() {
-//isRepeatがtrueなら処理を繰り返す
-				while (isRepeat) {
-					try {
-						Thread.sleep(REPEAT_INTERVAL);
-					} catch (InterruptedException e) {
-						Log.e("looper", "InterruptedException");
-					}
-//繰り返し処理
-					Log.d(TAG, "受信待機中...");
-					if (mInput != null) {
-						// InputStreamのバッファを格納
-						byte[] buffer = new byte[1024];
-						// 取得したバッファのサイズを格納
-						int bytes;
-						// InputStreamの読み込み
-						try {
-							Log.d(TAG, "input-stream読み込み1");
-							bytes = mInput.read(buffer);
-							Log.d(TAG, "input-stream読み込み2");
-							msg = new String(buffer, 0, bytes);
-							Log.d(TAG, "受信したメッセージ: " + msg);
-							inComingText(msg);
-						} catch (IOException e) {
-							e.printStackTrace();
-							Log.d(TAG, "読み込み失敗" + e);
-							break;
-						}
-					} else {
-						Log.d(TAG, "送られてないよ！");
-						break;
-					}
-				}
-
-			}
-		};
-
-		//スレッド起動
-		Thread thread = new Thread(looper);
-		thread.start();
-	}
 
 	// 機能の有効化ダイアログの操作結果
 //	@Override
@@ -169,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
 	public void sampleSend() {
 		Log.d(TAG, "sampleSend");
-		send2(mOutput);
+//		send2(mBtSocket);
 	}
 
 	//	jsのfunction呼び出し
@@ -183,12 +137,13 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
-	private void send2(OutputStream mOutput) {
+	private void send2(BluetoothSocket mBtSocket) throws IOException {
 		Log.d(TAG, "send2");
 		//文字列を送信する
 		byte[] bytes;
 		String str = "Hello Server2!";
 		bytes = str.getBytes();
+		mOutput = mBtSocket.getOutputStream();
 		try {
 			mOutput.write(bytes);
 			Log.d(TAG, "送信！");

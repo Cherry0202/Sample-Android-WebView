@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
+
+
 //		以下 WebView関連
 
 		// WebView呼び出し

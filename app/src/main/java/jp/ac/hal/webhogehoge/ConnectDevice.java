@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
-//	//	以下bluetooth関連
 class ConnectDevice extends Thread {
 	private static final String Mac = "14:91:38:A0:80:27";
 	private static final String Device = "Fire Tablet1";
@@ -87,7 +86,6 @@ class ConnectDevice extends Thread {
 	//	TODO デバイス接続タイミングが明瞭になってから変更予定
 	//	ペアリングしているデバイスがあるか
 	private String findDevice() {
-//		この配列渡せばよさそ
 		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
 
 		Log.d(TAG2, Arrays.toString(pairedDevices.toArray()));

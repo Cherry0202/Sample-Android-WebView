@@ -14,8 +14,6 @@ import java.util.Set;
 import java.util.UUID;
 
 class ConnectDevice extends Thread {
-	private static final String Mac = "14:91:38:A0:80:27";
-	private static final String Device = "Fire Tablet1";
 	private static final String BT_UUID = "fea4154d-4184-46b4-98a5-7896af703591";
 	private BluetoothAdapter bluetoothAdapter;
 	private final BluetoothManager bluetoothManager;
@@ -43,17 +41,18 @@ class ConnectDevice extends Thread {
 	}
 
 	@JavascriptInterface
-	public void connect(String msg, String macAddress) throws IOException {
+	public String connect(String msg, String macAddress) throws IOException {
 		try {
 			this.bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
 			this.bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
 		} catch (Exception e) {
-			throw e;
+			return e.toString();
 		}
 		this.start();
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = returnSocket());
 		messageWriter.sendMessage(msg);
 		this.bluetoothSocket.close();
+		return "OK";
 	}
 
 	private BluetoothSocket returnSocket() {

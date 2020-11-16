@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.webkit.JavascriptInterface;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,9 +60,13 @@ class ConnectDevice extends Thread {
 		return this.bluetoothSocket;
 	}
 
-	JSONArray returnDeviceArray() throws JSONException {
-		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
-//		JSONArray deviceList = new JSONArray();
+	private BluetoothAdapter returnBluetoothAdapter() {
+		return this.bluetoothAdapter;
+	}
+
+	@JavascriptInterface
+	public String returnDeviceArray() throws JSONException {
+		Set<BluetoothDevice> pairedDevices = returnBluetoothAdapter().getBondedDevices();
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
@@ -72,7 +75,7 @@ class ConnectDevice extends Thread {
 				jsonArrayCreator.objectPutter("mac-address", device.getAddress());
 				jsonArrayCreator.arrayPutter(jsonObject);
 			}
-			return jsonArrayCreator.returnJsonArray();
+			return jsonArrayCreator.returnJsonArray().toString();
 		}
 		return null;
 	}

@@ -13,8 +13,11 @@
     送信！！
 </div>
 <div id="sample3">
-    <!--    hoge-->
 </div>
+<input type="button" value="Sample devices" onClick="getDevicesAndroid()"/>
+<div id="sample4">
+</div>
+
 
 <script type="text/javascript">
         function connectAndroid() {
@@ -23,9 +26,11 @@
            Android.connect("foofooofoofoofoo","14:91:38:A0:80:27");
         }
 
-        function testEcho(msg) {
-           const element = document.getElementById('sample3')
-           element.innerHTML = '<h3>'+msg+'</h3>'
+        function getDevicesAndroid() {
+          const element4 = document.getElementById('sample4')
+          devices = Android.returnDeviceArray();
+          console.dir(devices);
+          element4.innerHTML = '<h1>'+devices+'</h1>'
         }
 
 </script>

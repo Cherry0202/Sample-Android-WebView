@@ -3,7 +3,6 @@ package jp.ac.hal.webhogehoge;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,9 +37,7 @@ class ConnectDevice extends Thread {
 	String connect(String macAddress) throws IOException {
 		try {
 			this.bluetoothDevice = this.bluetoothAdapter.getRemoteDevice(macAddress);
-			Log.d("debug", String.valueOf(this.bluetoothDevice));
 			this.bluetoothSocket = this.bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
-			Log.d("debug", String.valueOf(this.bluetoothSocket));
 		} catch (Exception e) {
 			return e.toString();
 		}

@@ -2,7 +2,6 @@ package jp.ac.hal.webhogehoge;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,8 +16,6 @@ class MessageWriter {
 	}
 
 	void sendMessage(String str) throws IOException {
-		Log.d(TAG, str);
-		Log.d(TAG, String.valueOf(this.bluetoothSocket));
 		if (!this.bluetoothSocket.isConnected()) {
 			SystemClock.sleep(2000);
 		}

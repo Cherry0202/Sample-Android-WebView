@@ -14,9 +14,14 @@ class MessageWriter {
 		this.bluetoothSocket = bluetoothSocket;
 	}
 
-	void sendMessage(String str) throws IOException {
-		if (!this.bluetoothSocket.isConnected()) {
-			SystemClock.sleep(2000);
+	String sendMessage(String str) throws IOException {
+		long start = System.currentTimeMillis();
+		while (!this.bluetoothSocket.isConnected()) {
+			SystemClock.sleep(100);
+			long end = System.currentTimeMillis();
+			if ((end - start) > 7000) {
+				return "timeout";
+			}
 		}
 		this.outputStream = this.bluetoothSocket.getOutputStream();
 		//文字列を送信する
@@ -27,5 +32,6 @@ class MessageWriter {
 		} catch (IOException e) {
 			throw e;
 		}
+		return "OK";
 	}
 }

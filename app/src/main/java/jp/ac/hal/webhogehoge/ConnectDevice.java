@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import org.json.JSONException;
@@ -26,33 +27,40 @@ class ConnectDevice extends Thread {
 	}
 
 	public void run() {
-		if (!this.bluetoothSocket.isConnected()) {
-			this.bluetoothAdapter.cancelDiscovery();
+//		if (!this.bluetoothSocket.isConnected()) {
+		this.bluetoothAdapter.cancelDiscovery();
+		try {
+			this.bluetoothSocket.connect();
+		} catch (IOException e) {
 			try {
-				this.bluetoothSocket.connect();
-			} catch (IOException e) {
-				try {
-					this.bluetoothSocket.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
+				this.bluetoothSocket.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
 		}
+//		}
 	}
 
 	@JavascriptInterface
 	public String connect(String msg, String macAddress) throws IOException {
 		try {
 			this.bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
+			Log.d("debug", String.valueOf(this.bluetoothDevice));
 			this.bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
+			Log.d("debug", String.valueOf(this.bluetoothSocket));
+			Log.d("debug", String.valueOf(this.bluetoothSocket.isConnected()));
 		} catch (Exception e) {
 			return e.toString();
 		}
 		this.start();
+		SendToRemoteDevice(msg);
+		return "OK";
+	}
+
+	private void SendToRemoteDevice(String msg) throws IOException {
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = returnSocket());
 		messageWriter.sendMessage(msg);
 		this.bluetoothSocket.close();
-		return "OK";
 	}
 
 	private BluetoothSocket returnSocket() {

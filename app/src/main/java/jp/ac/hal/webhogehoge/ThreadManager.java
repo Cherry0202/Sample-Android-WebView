@@ -23,8 +23,7 @@ public class ThreadManager {
 		ConnectDevice connectDevice = new ConnectDevice(returnBTAdapter());
 		connectDevice.connect(macAddress);
 		connectDevice.start();
-//		return connectDevice.SendToRemoteDevice(msg);
-		return "torima";
+		return connectDevice.SendToRemoteDevice(msg);
 	}
 
 	@JavascriptInterface

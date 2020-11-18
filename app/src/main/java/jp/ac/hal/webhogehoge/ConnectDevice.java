@@ -37,7 +37,7 @@ class ConnectDevice extends Thread {
 //		}
 	}
 
-	public String connect(String macAddress) throws IOException {
+	String connect(String macAddress) throws IOException {
 		try {
 			this.bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
 			Log.d("debug", String.valueOf(this.bluetoothDevice));
@@ -50,7 +50,7 @@ class ConnectDevice extends Thread {
 		return "OK";
 	}
 
-	public String SendToRemoteDevice(String msg) throws IOException {
+	String SendToRemoteDevice(String msg) throws IOException {
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = returnSocket());
 		messageWriter.sendMessage(msg);
 		this.bluetoothSocket.close();
@@ -65,7 +65,7 @@ class ConnectDevice extends Thread {
 		return this.bluetoothAdapter;
 	}
 
-	public String returnDeviceArray() throws JSONException {
+	String returnDeviceArray() throws JSONException {
 		Set<BluetoothDevice> pairedDevices = returnBluetoothAdapter().getBondedDevices();
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
 		if (pairedDevices.size() > 0) {

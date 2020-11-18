@@ -46,9 +46,9 @@ class ConnectDevice extends Thread {
 
 	String SendToRemoteDevice(String msg) throws IOException {
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = returnSocket());
-		messageWriter.sendMessage(msg);
+		String result = messageWriter.sendMessage(msg);
 		this.bluetoothSocket.close();
-		return msg;
+		return result;
 	}
 
 	private BluetoothSocket returnSocket() {

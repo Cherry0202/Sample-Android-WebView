@@ -12,10 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-	//    定数
-// Bluetooth機能の有効化要求時の識別コード
-	// メンバー変数
-	//BTの設定
 	private BluetoothManager bluetoothManager;
 	private BluetoothAdapter bluetoothAdapter;
 

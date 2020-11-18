@@ -16,8 +16,8 @@
 <script type="text/javascript">
         function connectAndroid() {
            const element1 = document.getElementById('sample1')
-           element1.innerHTML = '<h1>'+'Connect!'+'</h1>'
-           Android.threadMaker("foofooofoofoofoo","14:91:38:A0:80:27");
+           hoge = Android.threadMaker("foofooofoofoofoo","14:91:38:A0:80:27");
+           element1.innerHTML = '<h1>'+hoge+'</h1>'
         }
 
         function getDevicesAndroid() {
@@ -26,6 +26,7 @@
           console.dir(devices);
           element4.innerHTML = '<h1>'+devices+'</h1>'
         }
+
 
 
 

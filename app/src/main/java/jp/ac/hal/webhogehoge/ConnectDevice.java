@@ -23,7 +23,6 @@ class ConnectDevice extends Thread {
 	}
 
 	public void run() {
-//		if (!this.bluetoothSocket.isConnected()) {
 		this.bluetoothAdapter.cancelDiscovery();
 		try {
 			this.bluetoothSocket.connect();
@@ -34,7 +33,6 @@ class ConnectDevice extends Thread {
 				ex.printStackTrace();
 			}
 		}
-//		}
 	}
 
 	String connect(String macAddress) throws IOException {

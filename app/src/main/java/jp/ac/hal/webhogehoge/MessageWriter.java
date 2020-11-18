@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 class MessageWriter {
-	private static final String TAG = "debug";
 	private BluetoothSocket bluetoothSocket;
 	private OutputStream outputStream;
 

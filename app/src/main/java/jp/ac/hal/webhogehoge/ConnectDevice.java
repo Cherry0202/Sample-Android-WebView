@@ -37,11 +37,10 @@ class ConnectDevice extends Thread {
 
 	String connect(String macAddress) throws IOException {
 		try {
-			this.bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
+			this.bluetoothDevice = this.bluetoothAdapter.getRemoteDevice(macAddress);
 			Log.d("debug", String.valueOf(this.bluetoothDevice));
-			this.bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
+			this.bluetoothSocket = this.bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
 			Log.d("debug", String.valueOf(this.bluetoothSocket));
-			Log.d("debug", String.valueOf(this.bluetoothSocket.isConnected()));
 		} catch (Exception e) {
 			return e.toString();
 		}

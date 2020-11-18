@@ -14,13 +14,9 @@ public class ThreadManager {
 		this.bluetoothAdapter = bluetoothAdapter;
 	}
 
-	private BluetoothAdapter returnBTAdapter() {
-		return this.bluetoothAdapter;
-	}
-
 	@JavascriptInterface
-	public String threadMaker(String msg, String macAddress) throws IOException {
-		ConnectDevice connectDevice = new ConnectDevice(returnBTAdapter());
+	public String threadMaker(String macAddress, String msg) throws IOException {
+		ConnectDevice connectDevice = new ConnectDevice(this.bluetoothAdapter);
 		connectDevice.connect(macAddress);
 		connectDevice.start();
 		return connectDevice.SendToRemoteDevice(msg);
@@ -28,7 +24,7 @@ public class ThreadManager {
 
 	@JavascriptInterface
 	public String findDevice() throws JSONException {
-		ConnectDevice connectDevice = new ConnectDevice(returnBTAdapter());
+		ConnectDevice connectDevice = new ConnectDevice(this.bluetoothAdapter);
 		return connectDevice.returnDeviceArray();
 	}
 

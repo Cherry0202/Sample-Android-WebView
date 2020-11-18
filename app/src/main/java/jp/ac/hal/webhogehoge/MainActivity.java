@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 	private BluetoothAdapter mBluetoothAdapter; //BTアダプタ
 	public BluetoothSocket btSocket; //BTソケット
 	private JSONArray deviceArray;
+	private BluetoothManager bluetoothManager;
+	private BluetoothAdapter bluetoothAdapter;
 
 
 	WebView myWebView = null;
@@ -32,12 +34,8 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		ConnectDevice connectDevice = new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE));
-//		try {
-//			this.deviceArray = connectDevice.returnDeviceArray();
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
+		this.bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+		this.bluetoothAdapter = bluetoothManager.getAdapter();
 //		以下 WebView関連
 
 		// WebView呼び出し
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 //        WebView内でのjsを許可
 		myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
-		myWebView.addJavascriptInterface(new ConnectDevice((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)), "Android");
+		myWebView.addJavascriptInterface(new ThreadManager(this.bluetoothAdapter), "Android");
 		myWebView.loadUrl("file:///android_asset/index2.html");
 //		myWebView.setWebViewClient(new WebViewClient() {
 //			public void onPageFinished(WebView view, String weburl) {

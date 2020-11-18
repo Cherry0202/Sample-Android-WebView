@@ -17,15 +17,16 @@
         function connectAndroid() {
            const element1 = document.getElementById('sample1')
            element1.innerHTML = '<h1>'+'Connect!'+'</h1>'
-           Android.connect("foofooofoofoofoo","14:91:38:A0:80:27");
+           Android.threadMaker("foofooofoofoofoo","14:91:38:A0:80:27");
         }
 
         function getDevicesAndroid() {
           const element4 = document.getElementById('sample4')
-          devices = Android.returnDeviceArray();
+          devices = Android.findDevice();
           console.dir(devices);
           element4.innerHTML = '<h1>'+devices+'</h1>'
         }
+
 
 
 </script>

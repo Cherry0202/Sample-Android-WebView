@@ -2,10 +2,8 @@ package jp.ac.hal.webhogehoge;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
-import android.webkit.JavascriptInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,13 +15,11 @@ import java.util.UUID;
 class ConnectDevice extends Thread {
 	private static final String BT_UUID = "fea4154d-4184-46b4-98a5-7896af703591";
 	private BluetoothAdapter bluetoothAdapter;
-	private final BluetoothManager bluetoothManager;
 	private BluetoothDevice bluetoothDevice;
 	private BluetoothSocket bluetoothSocket;
 
-	ConnectDevice(BluetoothManager bluetoothManager) {
-		this.bluetoothManager = bluetoothManager;
-		this.bluetoothAdapter = bluetoothManager.getAdapter();
+	ConnectDevice(BluetoothAdapter bluetoothAdapter) {
+		this.bluetoothAdapter = bluetoothAdapter;
 	}
 
 	public void run() {
@@ -41,8 +37,7 @@ class ConnectDevice extends Thread {
 //		}
 	}
 
-	@JavascriptInterface
-	public String connect(String msg, String macAddress) throws IOException {
+	public String connect(String macAddress) throws IOException {
 		try {
 			this.bluetoothDevice = bluetoothAdapter.getRemoteDevice(macAddress);
 			Log.d("debug", String.valueOf(this.bluetoothDevice));
@@ -52,15 +47,14 @@ class ConnectDevice extends Thread {
 		} catch (Exception e) {
 			return e.toString();
 		}
-		this.start();
-		SendToRemoteDevice(msg);
 		return "OK";
 	}
 
-	private void SendToRemoteDevice(String msg) throws IOException {
+	public String SendToRemoteDevice(String msg) throws IOException {
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = returnSocket());
 		messageWriter.sendMessage(msg);
 		this.bluetoothSocket.close();
+		return msg;
 	}
 
 	private BluetoothSocket returnSocket() {
@@ -71,7 +65,6 @@ class ConnectDevice extends Thread {
 		return this.bluetoothAdapter;
 	}
 
-	@JavascriptInterface
 	public String returnDeviceArray() throws JSONException {
 		Set<BluetoothDevice> pairedDevices = returnBluetoothAdapter().getBondedDevices();
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();

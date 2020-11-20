@@ -24,14 +24,12 @@ class JsonArrayCreator {
 		this.jsonArray.put(jsonObject);
 	}
 
-	JSONObject returnJsonObject() {
+	JSONObject getJsonObject() {
 		jsonCreator();
 		return this.jsonObject;
 	}
 
-	JSONArray returnJsonArray() {
+	JSONArray getJsonArray() {
 		return this.jsonArray;
 	}
-
-
 }

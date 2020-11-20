@@ -45,31 +45,27 @@ class ConnectDevice extends Thread {
 	}
 
 	String SendToRemoteDevice(String msg) throws IOException {
-		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = returnSocket());
+		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = getSocket());
 		String result = messageWriter.sendMessage(msg);
 		this.bluetoothSocket.close();
 		return result;
 	}
 
-	private BluetoothSocket returnSocket() {
+	private BluetoothSocket getSocket() {
 		return this.bluetoothSocket;
 	}
 
-	private BluetoothAdapter returnBluetoothAdapter() {
-		return this.bluetoothAdapter;
-	}
-
-	String returnDeviceArray() throws JSONException {
-		Set<BluetoothDevice> pairedDevices = returnBluetoothAdapter().getBondedDevices();
+	String getDeviceArray() throws JSONException {
+		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
-				JSONObject jsonObject = jsonArrayCreator.returnJsonObject();
+				JSONObject jsonObject = jsonArrayCreator.getJsonObject();
 				jsonArrayCreator.objectPutter("device-name", device.getName());
 				jsonArrayCreator.objectPutter("mac-address", device.getAddress());
 				jsonArrayCreator.arrayPutter(jsonObject);
 			}
-			return jsonArrayCreator.returnJsonArray().toString();
+			return jsonArrayCreator.getJsonArray().toString();
 		}
 		return null;
 	}

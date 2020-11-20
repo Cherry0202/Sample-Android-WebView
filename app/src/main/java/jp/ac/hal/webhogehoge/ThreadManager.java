@@ -25,7 +25,7 @@ public class ThreadManager {
 	@JavascriptInterface
 	public String findDevice() throws JSONException {
 		ConnectDevice connectDevice = new ConnectDevice(this.bluetoothAdapter);
-		return connectDevice.returnDeviceArray();
+		return connectDevice.getDeviceArray();
 	}
 
 }

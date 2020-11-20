@@ -61,8 +61,8 @@ class ConnectDevice extends Thread {
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
 				JSONObject jsonObject = jsonArrayCreator.getJsonObject();
-				jsonArrayCreator.objectPutter("device-name", device.getName());
-				jsonArrayCreator.objectPutter("mac-address", device.getAddress());
+				jsonArrayCreator.objectPutter("deviceName", device.getName());
+				jsonArrayCreator.objectPutter("macAddress", device.getAddress());
 				jsonArrayCreator.arrayPutter(jsonObject);
 			}
 			return jsonArrayCreator.getJsonArray().toString();

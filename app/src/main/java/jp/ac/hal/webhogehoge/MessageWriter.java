@@ -14,13 +14,13 @@ class MessageWriter {
 		this.bluetoothSocket = bluetoothSocket;
 	}
 
-	String sendMessage(String str) throws IOException {
+	Boolean sendMessage(String str) throws IOException {
 		long start = System.currentTimeMillis();
 		while (!this.bluetoothSocket.isConnected()) {
 			SystemClock.sleep(100);
 			long end = System.currentTimeMillis();
 			if ((end - start) > 7000) {
-				return "timeout";
+				return false;
 			}
 		}
 		this.outputStream = this.bluetoothSocket.getOutputStream();
@@ -32,6 +32,6 @@ class MessageWriter {
 		} catch (IOException e) {
 			throw e;
 		}
-		return "OK";
+		return true;
 	}
 }

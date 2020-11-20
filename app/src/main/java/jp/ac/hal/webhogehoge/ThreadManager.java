@@ -19,7 +19,7 @@ public class ThreadManager {
 		ConnectDevice connectDevice = new ConnectDevice(this.bluetoothAdapter);
 		connectDevice.connect(macAddress);
 		connectDevice.start();
-		return connectDevice.SendToRemoteDevice(msg);
+		return connectDevice.SendToRemoteDevice(msg).toString();
 	}
 
 	@JavascriptInterface

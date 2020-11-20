@@ -44,15 +44,11 @@ class ConnectDevice extends Thread {
 		return "OK";
 	}
 
-	String SendToRemoteDevice(String msg) throws IOException {
-		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket = getSocket());
-		String result = messageWriter.sendMessage(msg);
+	Boolean SendToRemoteDevice(String msg) throws IOException {
+		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket);
+		Boolean result = messageWriter.sendMessage(msg);
 		this.bluetoothSocket.close();
 		return result;
-	}
-
-	private BluetoothSocket getSocket() {
-		return this.bluetoothSocket;
 	}
 
 	String getDeviceArray() throws JSONException {

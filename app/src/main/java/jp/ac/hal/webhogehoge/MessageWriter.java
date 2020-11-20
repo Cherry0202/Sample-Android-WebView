@@ -4,11 +4,9 @@ import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 class MessageWriter {
 	private BluetoothSocket bluetoothSocket;
-	private OutputStream outputStream;
 
 	MessageWriter(BluetoothSocket bluetoothSocket) {
 		this.bluetoothSocket = bluetoothSocket;
@@ -23,12 +21,11 @@ class MessageWriter {
 				return false;
 			}
 		}
-		this.outputStream = this.bluetoothSocket.getOutputStream();
 		//文字列を送信する
 		byte[] bytes;
 		bytes = str.getBytes();
 		try {
-			this.outputStream.write(bytes);
+			this.bluetoothSocket.getOutputStream().write(bytes);
 		} catch (IOException e) {
 			throw e;
 		}

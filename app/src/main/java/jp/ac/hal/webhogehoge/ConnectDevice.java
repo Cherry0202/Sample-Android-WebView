@@ -63,6 +63,6 @@ class ConnectDevice extends Thread {
 			}
 			return jsonArrayCreator.getJsonArray().toString();
 		}
-		return null;
+		return "paired device is not found";
 	}
 }

@@ -12,10 +12,6 @@ import java.util.Set;
 import java.util.UUID;
 
 class ConnectDevice extends Thread {
-	private static final String BT_UUID = "fea4154d-4184-46b4-98a5-7896af703591";
-	private static final String deviceName = "deviceName";
-	private static final String macAddress = "macAddress";
-	private static final String result = "result";
 	private BluetoothAdapter bluetoothAdapter;
 	private BluetoothDevice bluetoothDevice;
 	private BluetoothSocket bluetoothSocket;
@@ -40,7 +36,7 @@ class ConnectDevice extends Thread {
 	void connect(String macAddress) throws IOException {
 		try {
 			this.bluetoothDevice = this.bluetoothAdapter.getRemoteDevice(macAddress);
-			this.bluetoothSocket = this.bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
+			this.bluetoothSocket = this.bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(ConstValue.BT_UUID.getConstValue()));
 		} catch (Exception e) {
 			e.toString();
 		}
@@ -50,7 +46,7 @@ class ConnectDevice extends Thread {
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket);
 		Boolean jsonValue = messageWriter.sendMessage(msg);
-		jsonArrayCreator.objectPutter(result, jsonValue.toString());
+		jsonArrayCreator.objectPutter(ConstValue.RESULT.getConstValue(), jsonValue.toString());
 		this.bluetoothSocket.close();
 		return jsonArrayCreator.getJsonObject();
 	}
@@ -61,13 +57,13 @@ class ConnectDevice extends Thread {
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
 				JSONObject jsonObject = jsonArrayCreator.getJsonObject();
-				jsonArrayCreator.objectPutter(deviceName, device.getName());
-				jsonArrayCreator.objectPutter(macAddress, device.getAddress());
+				jsonArrayCreator.objectPutter(ConstValue.DEVICE_NAME.getConstValue(), device.getName());
+				jsonArrayCreator.objectPutter(ConstValue.MAC_ADDRESS.getConstValue(), device.getAddress());
 				jsonArrayCreator.arrayPutter(jsonObject);
 			}
 			return jsonArrayCreator.getJsonArray();
 		}
-		jsonArrayCreator.objectPutter(result, "paired device is not found");
+		jsonArrayCreator.objectPutter(ConstValue.RESULT.getConstValue(), "paired device is not found");
 		return jsonArrayCreator.getJsonObject();
 	}
 }

@@ -18,7 +18,7 @@ class MessageWriter {
 			SystemClock.sleep(100);
 			long end = System.currentTimeMillis();
 			if ((end - start) > 7000) {
-				return false;
+				return Boolean.FALSE;
 			}
 		}
 		//文字列を送信する
@@ -29,6 +29,6 @@ class MessageWriter {
 		} catch (IOException e) {
 			throw e;
 		}
-		return true;
+		return Boolean.TRUE;
 	}
 }

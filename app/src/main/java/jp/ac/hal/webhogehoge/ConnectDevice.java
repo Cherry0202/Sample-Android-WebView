@@ -48,7 +48,6 @@ class ConnectDevice extends Thread {
 
 	String sendToRemoteDevice(String msg) throws IOException, JSONException {
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
-		jsonArrayCreator.jsonCreator();
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket);
 		Boolean jsonValue = messageWriter.sendMessage(msg);
 		jsonArrayCreator.objectPutter(result, jsonValue.toString());
@@ -61,7 +60,6 @@ class ConnectDevice extends Thread {
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
-				jsonArrayCreator.jsonCreator();
 				JSONObject jsonObject = jsonArrayCreator.getJsonObject();
 				jsonArrayCreator.objectPutter(deviceName, device.getName());
 				jsonArrayCreator.objectPutter(macAddress, device.getAddress());
@@ -69,7 +67,6 @@ class ConnectDevice extends Thread {
 			}
 			return jsonArrayCreator.getJsonArray().toString();
 		}
-		jsonArrayCreator.jsonCreator();
 		jsonArrayCreator.objectPutter(result, "paired device is not found");
 		return jsonArrayCreator.getJsonObject().toString();
 	}

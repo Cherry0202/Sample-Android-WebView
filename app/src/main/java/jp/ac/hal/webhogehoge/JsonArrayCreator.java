@@ -12,7 +12,7 @@ class JsonArrayCreator {
 		this.jsonArray = new JSONArray();
 	}
 
-	private void jsonCreator() {
+	void jsonCreator() {
 		this.jsonObject = new JSONObject();
 	}
 
@@ -25,7 +25,6 @@ class JsonArrayCreator {
 	}
 
 	JSONObject getJsonObject() {
-		jsonCreator();
 		return this.jsonObject;
 	}
 

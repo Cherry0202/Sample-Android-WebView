@@ -19,13 +19,13 @@ public class ThreadManager {
 		ConnectDevice connectDevice = new ConnectDevice(this.bluetoothAdapter);
 		connectDevice.connect(macAddress);
 		connectDevice.start();
-		return connectDevice.sendToRemoteDevice(msg);
+		return connectDevice.sendToRemoteDevice(msg).toString();
 	}
 
 	@JavascriptInterface
 	public String findDevice() throws JSONException {
 		ConnectDevice connectDevice = new ConnectDevice(this.bluetoothAdapter);
-		return connectDevice.getDeviceArray();
+		return connectDevice.getDeviceArray().toString();
 	}
 
 }

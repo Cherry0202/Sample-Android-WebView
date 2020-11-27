@@ -13,6 +13,8 @@ import java.util.UUID;
 
 class ConnectDevice extends Thread {
 	private static final String BT_UUID = "fea4154d-4184-46b4-98a5-7896af703591";
+	private static final String deviceName = "deviceName";
+	private static final String macAddress = "macAddress";
 	private BluetoothAdapter bluetoothAdapter;
 	private BluetoothDevice bluetoothDevice;
 	private BluetoothSocket bluetoothSocket;
@@ -57,8 +59,8 @@ class ConnectDevice extends Thread {
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
 				JSONObject jsonObject = jsonArrayCreator.getJsonObject();
-				jsonArrayCreator.objectPutter("deviceName", device.getName());
-				jsonArrayCreator.objectPutter("macAddress", device.getAddress());
+				jsonArrayCreator.objectPutter(deviceName, device.getName());
+				jsonArrayCreator.objectPutter(macAddress, device.getAddress());
 				jsonArrayCreator.arrayPutter(jsonObject);
 			}
 			return jsonArrayCreator.getJsonArray().toString();

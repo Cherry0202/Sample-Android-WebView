@@ -63,7 +63,7 @@ class ConnectDevice extends Thread {
 			}
 			return jsonArrayCreator.getJsonArray();
 		}
-		jsonArrayCreator.objectPutter(ConstValue.RESULT.getConstValue(), "paired device is not found");
+		jsonArrayCreator.objectPutter(ConstValue.RESULT.getConstValue(), ConstValue.DEVICE_NOT_FOUND.getConstValue());
 		return jsonArrayCreator.getJsonObject();
 	}
 }

@@ -15,11 +15,11 @@ public class ThreadManager {
 	}
 
 	@JavascriptInterface
-	public String threadMaker(String macAddress, String msg) throws IOException {
+	public String threadMaker(String macAddress, String msg) throws IOException, JSONException {
 		ConnectDevice connectDevice = new ConnectDevice(this.bluetoothAdapter);
 		connectDevice.connect(macAddress);
 		connectDevice.start();
-		return connectDevice.SendToRemoteDevice(msg).toString();
+		return connectDevice.sendToRemoteDevice(msg);
 	}
 
 	@JavascriptInterface

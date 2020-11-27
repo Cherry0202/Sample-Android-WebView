@@ -15,6 +15,7 @@ class ConnectDevice extends Thread {
 	private static final String BT_UUID = "fea4154d-4184-46b4-98a5-7896af703591";
 	private static final String deviceName = "deviceName";
 	private static final String macAddress = "macAddress";
+	private static final String result = "result";
 	private BluetoothAdapter bluetoothAdapter;
 	private BluetoothDevice bluetoothDevice;
 	private BluetoothSocket bluetoothSocket;
@@ -36,21 +37,23 @@ class ConnectDevice extends Thread {
 		}
 	}
 
-	String connect(String macAddress) throws IOException {
+	void connect(String macAddress) throws IOException {
 		try {
 			this.bluetoothDevice = this.bluetoothAdapter.getRemoteDevice(macAddress);
 			this.bluetoothSocket = this.bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(BT_UUID));
 		} catch (Exception e) {
-			return e.toString();
+			e.toString();
 		}
-		return "OK";
 	}
 
-	Boolean SendToRemoteDevice(String msg) throws IOException {
+	String sendToRemoteDevice(String msg) throws IOException, JSONException {
+		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
+		jsonArrayCreator.jsonCreator();
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket);
-		Boolean result = messageWriter.sendMessage(msg);
+		Boolean jsonValue = messageWriter.sendMessage(msg);
+		jsonArrayCreator.objectPutter(result, jsonValue.toString());
 		this.bluetoothSocket.close();
-		return result;
+		return jsonArrayCreator.getJsonObject().toString();
 	}
 
 	String getDeviceArray() throws JSONException {
@@ -66,6 +69,8 @@ class ConnectDevice extends Thread {
 			}
 			return jsonArrayCreator.getJsonArray().toString();
 		}
-		return "paired device is not found";
+		jsonArrayCreator.jsonCreator();
+		jsonArrayCreator.objectPutter(result, "paired device is not found");
+		return jsonArrayCreator.getJsonObject().toString();
 	}
 }

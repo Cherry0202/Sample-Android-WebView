@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
 		myWebView.getSettings().setJavaScriptEnabled(true);
 //       webAppInterfaceを使う
 		myWebView.addJavascriptInterface(new ThreadManager(this.bluetoothAdapter), "Android");
-		myWebView.loadUrl("file:///android_asset/index2.html");
-//		myWebView.loadUrl("file:///android_asset/dist/index.html");
+//		myWebView.loadUrl("file:///android_asset/index2.html");
+		myWebView.loadUrl("file:///android_asset/dist/index.html");
 	}
 
 	//　初回表示、ポーズからの復帰時

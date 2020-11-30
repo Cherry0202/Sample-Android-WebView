@@ -60,6 +60,7 @@ class ConnectDevice extends Thread {
 				jsonArrayCreator.objectPutter(ConstValue.DEVICE_NAME.getConstValue(), device.getName());
 				jsonArrayCreator.objectPutter(ConstValue.MAC_ADDRESS.getConstValue(), device.getAddress());
 				jsonArrayCreator.arrayPutter(jsonObject);
+				jsonArrayCreator.JsonObjectInit();
 			}
 			return jsonArrayCreator.getJsonArray();
 		}

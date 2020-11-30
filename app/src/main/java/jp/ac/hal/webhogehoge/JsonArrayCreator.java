@@ -6,22 +6,27 @@ import org.json.JSONObject;
 
 class JsonArrayCreator {
 	private JSONArray jsonArray;
-	private final JSONObject JSON_OBJECT = new JSONObject();
+	private JSONObject jsonObject;
 
 	JsonArrayCreator() {
 		this.jsonArray = new JSONArray();
+		this.jsonObject = new JSONObject();
 	}
 
 	void objectPutter(String key, String value) throws JSONException {
-		JSON_OBJECT.put(key, value);
+		this.jsonObject.put(key, value);
 	}
 
 	void arrayPutter(JSONObject jsonObject) {
 		this.jsonArray.put(jsonObject);
 	}
 
+	void JsonObjectInit() {
+		this.jsonObject = new JSONObject();
+	}
+
 	JSONObject getJsonObject() {
-		return this.JSON_OBJECT;
+		return this.jsonObject;
 	}
 
 	JSONArray getJsonArray() {

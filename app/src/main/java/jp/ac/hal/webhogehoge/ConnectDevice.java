@@ -38,17 +38,17 @@ class ConnectDevice extends Thread {
 			this.bluetoothDevice = this.bluetoothAdapter.getRemoteDevice(macAddress);
 			this.bluetoothSocket = this.bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString(ConstValue.BT_UUID.getConstValue()));
 		} catch (Exception e) {
-			e.toString();
+			throw e;
 		}
 	}
 
 	JSONObject sendToRemoteDevice(String msg) throws IOException, JSONException {
-		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
+		JsonObjectCreator jsonObjectCreator = new JsonObjectCreator();
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket);
 		Boolean jsonValue = messageWriter.sendMessage(msg);
-		jsonArrayCreator.objectPutter(ConstValue.RESULT.getConstValue(), jsonValue.toString());
+		jsonObjectCreator.putObjectValues(ConstValue.RESULT.getConstValue(), jsonValue.toString());
 		this.bluetoothSocket.close();
-		return jsonArrayCreator.getJsonObject();
+		return jsonObjectCreator.getJsonObject();
 	}
 
 	Object getDeviceArray() throws JSONException {
@@ -56,15 +56,15 @@ class ConnectDevice extends Thread {
 		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
 		if (pairedDevices.size() > 0) {
 			for (BluetoothDevice device : pairedDevices) {
-				JSONObject jsonObject = jsonArrayCreator.getJsonObject();
-				jsonArrayCreator.objectPutter(ConstValue.DEVICE_NAME.getConstValue(), device.getName());
-				jsonArrayCreator.objectPutter(ConstValue.MAC_ADDRESS.getConstValue(), device.getAddress());
-				jsonArrayCreator.arrayPutter(jsonObject);
-				jsonArrayCreator.JsonObjectInit();
+				JsonObjectCreator jsonObjectCreator = new JsonObjectCreator();
+				jsonObjectCreator.putObjectValues(ConstValue.DEVICE_NAME.getConstValue(), device.getName());
+				jsonObjectCreator.putObjectValues(ConstValue.MAC_ADDRESS.getConstValue(), device.getAddress());
+				jsonArrayCreator.arrayPutter(jsonObjectCreator.getJsonObject());
 			}
 			return jsonArrayCreator.getJsonArray();
 		}
-		jsonArrayCreator.objectPutter(ConstValue.RESULT.getConstValue(), ConstValue.DEVICE_NOT_FOUND.getConstValue());
-		return jsonArrayCreator.getJsonObject();
+		JsonObjectCreator jsonObjectCreator = new JsonObjectCreator();
+		jsonObjectCreator.putObjectValues(ConstValue.RESULT.getConstValue(), ConstValue.DEVICE_NOT_FOUND.getConstValue());
+		return jsonObjectCreator.getJsonObject();
 	}
 }

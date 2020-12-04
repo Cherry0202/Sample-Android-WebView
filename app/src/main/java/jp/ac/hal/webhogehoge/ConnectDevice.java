@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +16,7 @@ class ConnectDevice extends Thread {
 	private BluetoothAdapter bluetoothAdapter;
 	private BluetoothDevice bluetoothDevice;
 	private BluetoothSocket bluetoothSocket;
+
 
 	ConnectDevice(BluetoothAdapter bluetoothAdapter) {
 		this.bluetoothAdapter = bluetoothAdapter;
@@ -53,18 +55,18 @@ class ConnectDevice extends Thread {
 
 	Object getDeviceArray() throws JSONException {
 		Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
-		JsonArrayCreator jsonArrayCreator = new JsonArrayCreator();
 		if (pairedDevices.size() > 0) {
+			JSONArray jsonArray = new JSONArray();
 			for (BluetoothDevice device : pairedDevices) {
-				JsonObjectCreator jsonObjectCreator = new JsonObjectCreator();
-				jsonObjectCreator.putObjectValues(ConstValue.DEVICE_NAME.getConstValue(), device.getName());
-				jsonObjectCreator.putObjectValues(ConstValue.MAC_ADDRESS.getConstValue(), device.getAddress());
-				jsonArrayCreator.arrayPutter(jsonObjectCreator.getJsonObject());
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put(ConstValue.DEVICE_NAME.getConstValue(), device.getName());
+				jsonObject.put(ConstValue.MAC_ADDRESS.getConstValue(), device.getAddress());
+				jsonArray.put(jsonObject);
 			}
-			return jsonArrayCreator.getJsonArray();
+			return jsonArray;
 		}
-		JsonObjectCreator jsonObjectCreator = new JsonObjectCreator();
-		jsonObjectCreator.putObjectValues(ConstValue.RESULT.getConstValue(), ConstValue.DEVICE_NOT_FOUND.getConstValue());
-		return jsonObjectCreator.getJsonObject();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(ConstValue.RESULT.getConstValue(), ConstValue.DEVICE_NOT_FOUND.getConstValue());
+		return jsonObject;
 	}
 }

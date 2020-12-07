@@ -45,12 +45,12 @@ class ConnectDevice extends Thread {
 	}
 
 	JSONObject sendToRemoteDevice(String msg) throws IOException, JSONException {
-		JsonObjectCreator jsonObjectCreator = new JsonObjectCreator();
+		JSONObject jsonObject = new JSONObject();
 		MessageWriter messageWriter = new MessageWriter(this.bluetoothSocket);
 		Boolean jsonValue = messageWriter.sendMessage(msg);
-		jsonObjectCreator.putObjectValues(ConstValue.RESULT.getConstValue(), jsonValue.toString());
+		jsonObject.put(ConstValue.RESULT.getConstValue(), jsonValue.toString());
 		this.bluetoothSocket.close();
-		return jsonObjectCreator.getJsonObject();
+		return jsonObject;
 	}
 
 	Object getDeviceArray() throws JSONException {

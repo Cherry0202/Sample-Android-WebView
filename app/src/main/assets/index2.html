@@ -15,8 +15,10 @@
 
 <script type="text/javascript">
         function connectAndroid() {
+           const json = {subscription_id: 'hogehoge',url: 'hogehoge.com',length: 2,last: 3}
+           const obj = JSON.stringify(json);
            const element1 = document.getElementById('sample1')
-           hoge = Android.threadMaker("14:91:38:A0:80:27","foofooofoofoofoo");
+           hoge = Android.threadMaker("14:91:38:A0:80:27", obj);
            element1.innerHTML = '<h1>'+hoge+'</h1>'
         }
 
@@ -26,10 +28,6 @@
           console.dir(devices);
           element4.innerHTML = '<h1>'+devices+'</h1>'
         }
-
-
-
-
 
 
 </script>

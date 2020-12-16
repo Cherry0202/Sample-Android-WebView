@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.3aa0b1fd0562553bf47af49c67914e63.js"
+  "precache-manifest.31135580b177b52af8edddafc04287f4.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "takumi"});

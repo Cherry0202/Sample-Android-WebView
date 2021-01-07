@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -48,5 +49,14 @@ public class MainActivity extends AppCompatActivity {
 	public void onDestroy() {
 		myWebView.destroy();
 		super.onDestroy();
+	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// 端末の戻るボタンでブラウザバック
+		if (keyCode == KeyEvent.KEYCODE_BACK && myWebView.canGoBack()) {
+			myWebView.goBack();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }
